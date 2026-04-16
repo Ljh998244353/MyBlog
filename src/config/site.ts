@@ -1,7 +1,7 @@
 export const siteConfig = {
-  title: 'LJH Blogs',
-  description: '退役败犬APの学习笔记',
-  author: 'LJH',
+  title: 'liu_jh の Blog',
+  description: '开发、写作与学习记录',
+  author: 'liu_jh',
   siteUrl: 'https://ljh998244353.github.io/MyBlog',
   navigation: [
     { label: '首页', href: '/' },

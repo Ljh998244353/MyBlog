@@ -1,35 +1,42 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
 
-const description = '关于这个阅读型博客：它记录我在搭建、写作和长期维护个人站点时的学习笔记。';
+const description = '关于 liu_jh：开发、写作与学习记录。';
 ---
 
 <BaseLayout title="关于" description={description}>
-  <section class="container section prose-shell">
+  <section class="container section about-page reveal reveal-1">
     <div class="section-heading">
-      <h1>关于这个博客</h1>
+      <h1>关于我</h1>
     </div>
 
-    <div class="article-body">
-      <p>
-        这个站点基于 Astro 构建，采用静态输出，文章使用 MDX 维护。它被设计成一个偏阅读型的个人博客：先给读者清晰入口，再把主要注意力留给正文本身。
+    <div class="about-intro">
+      <p class="eyebrow">liu_jh</p>
+      <h2>把开发、写作与长期积累整理成可回看的内容。</h2>
+      <p class="about-lead">
+        这里主要记录个人项目、学习过程和那些值得反复查阅的问题拆解。它更像一个长期更新的个人内容工作区，而不是单纯的站点说明页。
       </p>
-      <p>
-        站点现在优先保证内容体验，包括文章归档、标签聚合、目录、代码高亮、上一篇与下一篇、RSS 和搜索；不引入后台服务、评论系统或额外运行时依赖。
-      </p>
-      <h2>写作原则</h2>
-      <ul>
-        <li>每篇文章只解决一个清晰问题，避免把不同主题塞进同一篇长文。</li>
-        <li>元数据保持统一，方便后续生成列表、标签、RSS 和搜索索引。</li>
-        <li>优先写可复用的内容片段，例如代码示例、流程总结和经验清单。</li>
-      </ul>
-      <h2>站点结构</h2>
-      <ul>
-        <li>`src/content/blog/`：文章内容与 frontmatter</li>
-        <li>`src/pages/`：页面路由与静态数据接口</li>
-        <li>`src/components/`：布局、卡片、目录和 MDX 组件</li>
-        <li>`.github/workflows/`：GitHub Pages 部署流程</li>
-      </ul>
+    </div>
+
+    <div class="about-grid">
+      <section class="about-card">
+        <h2>我在写什么</h2>
+        <p>开发中的问题拆解、实现过程、个人站维护，以及适合长期保存和回看的学习记录。</p>
+      </section>
+
+      <section class="about-card">
+        <h2>怎么写</h2>
+        <ul>
+          <li>尽量把一篇文章集中在一个清晰问题上。</li>
+          <li>保留过程、结论和后续能复用的内容。</li>
+          <li>优先整理那些以后还会回来查阅的记录。</li>
+        </ul>
+      </section>
+
+      <section class="about-card">
+        <h2>现在的重心</h2>
+        <p>目前会继续围绕个人项目、工具使用、写作整理和长期积累做轻量更新。</p>
+      </section>
     </div>
   </section>
 </BaseLayout>

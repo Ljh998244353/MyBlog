@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
 import TagChip from '../components/TagChip.astro';
-import { siteConfig } from '../config/site';
 import {
   createExcerpt,
   estimateReadingTime,
@@ -24,14 +23,34 @@ const featuredReadingTime = featuredPost
 const featuredExcerpt = featuredPost
   ? createExcerpt(featuredPost.body ?? featuredPost.data.description, 72)
   : '';
+const recentFocus = topTags
+  .slice(0, 2)
+  .map((tag) => tag.tag)
+  .join(' / ');
+const heroActivity = [
+  {
+    label: '最近更新',
+    value: featuredPost ? formatDate(featuredPost.data.pubDate) : '准备中'
+  },
+  {
+    label: '近期主题',
+    value: recentFocus || '持续整理中'
+  },
+  {
+    label: '已发布',
+    value: `${posts.length} 篇文章`
+  }
+] as const;
 ---
 
 <BaseLayout image="/head.jpg">
   <section class="hero container">
     <div class="hero-copy-block reveal reveal-1">
-      <p class="eyebrow">Personal Notes</p>
-      <h1>{siteConfig.title}</h1>
-      <p class="hero-copy hero-copy-strong">{siteConfig.description}</p>
+      <p class="eyebrow">开发 · 写作 · 学习</p>
+      <h1>开发、写作与学习记录</h1>
+      <p class="hero-copy hero-copy-strong">
+        围绕个人项目、问题拆解和长期积累，整理能回看的文章与笔记。
+      </p>
       <div class="hero-actions reveal reveal-2">
         <a class="button" href={featuredPostPath}>
           {featuredPost ? '最新文章' : '浏览文章'}
@@ -40,6 +59,23 @@ const featuredExcerpt = featuredPost
         <a class="button button-secondary" href={withBase('/search/')}>搜索</a>
       </div>
     </div>
+
+    <aside class="hero-activity reveal reveal-2" aria-label="最近动态">
+      <p class="hero-activity-heading">最近动态</p>
+      <div class="hero-activity-list">
+        {heroActivity.map((item) => (
+          <div class="hero-activity-item">
+            <span class="hero-activity-label">{item.label}</span>
+            <strong class="hero-activity-value">{item.value}</strong>
+          </div>
+        ))}
+      </div>
+
+      <a class="hero-activity-featured" href={featuredPostPath}>
+        <span>最近文章</span>
+        <strong>{featuredPost ? featuredPost.data.title : '浏览文章归档'}</strong>
+      </a>
+    </aside>
   </section>
 
   {
