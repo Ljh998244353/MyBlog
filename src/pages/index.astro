@@ -24,7 +24,6 @@ const featuredReadingTime = featuredPost
 const featuredExcerpt = featuredPost
   ? createExcerpt(featuredPost.body ?? featuredPost.data.description, 72)
   : '';
-const heroLineChars = Array.from(siteConfig.heroLine).filter((char) => char.trim().length > 0);
 const recentFocus = topTags
   .slice(0, 2)
   .map((tag) => tag.tag)
@@ -59,11 +58,7 @@ const heroActivity = [
           </div>
         </div>
 
-        <p class="hero-line" aria-label={siteConfig.heroLine}>
-          {heroLineChars.map((char) => (
-            <span>{char}</span>
-          ))}
-        </p>
+        <p class="hero-line">{siteConfig.heroLine}</p>
 
         <div class="hero-actions reveal reveal-2">
           <a class="button" href={featuredPostPath}>
