@@ -15,6 +15,7 @@ npm run dev
 - `npm run check`：运行 Astro 类型与内容检查
 - `npm run build`：构建静态站点
 - `npm run preview`：本地预览构建产物
+- `npm run publish`：执行发布前检查与构建，成功后再 `git push`
 
 ## 内容结构
 
@@ -41,3 +42,10 @@ draft: false
 ## GitHub Pages
 
 工作流默认在推送 `main` 分支后自动构建并部署。`astro.config.mjs` 会在 GitHub Actions 中自动推导项目页的 `base` 路径；如果后续改用自定义域名，可以通过 `SITE_URL` 和 `BASE_PATH` 环境变量覆盖默认值。
+
+## 最简发布流程
+
+1. 在 `src/content/blog/` 写完文章
+2. 将 frontmatter 中的 `draft` 改为 `false`
+3. 运行 `npm run publish`
+4. 执行 `git push`
