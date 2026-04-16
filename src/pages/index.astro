@@ -28,7 +28,6 @@ const recentFocus = topTags
   .slice(0, 2)
   .map((tag) => tag.tag)
   .join(' / ');
-const heroIntro = '这里记录开发、写作、折腾过程，以及一点不那么严肃的奇妙冒险。';
 const heroActivity = [
   {
     label: '最近更新',
@@ -56,11 +55,8 @@ const heroActivity = [
           <div class="hero-profile-copy">
             <span class="hero-profile-kicker">Personal Log / 个人博客</span>
             <h1>{siteConfig.title}</h1>
-            <p class="hero-copy">{siteConfig.description}</p>
           </div>
         </div>
-
-        <p class="hero-intro">{heroIntro}</p>
 
         <div class="hero-actions reveal reveal-2">
           <a class="button" href={featuredPostPath}>
