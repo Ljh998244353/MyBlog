@@ -363,6 +363,10 @@ pre {
   align-items: start;
 }
 
+.latest-layout.is-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .featured-story {
   min-height: 100%;
   padding: 1.1rem 1.15rem;
@@ -370,6 +374,11 @@ pre {
   border: 1px solid var(--line);
   background: var(--surface);
   box-shadow: var(--shadow);
+}
+
+.latest-layout.is-single .featured-story {
+  max-width: 720px;
+  justify-self: start;
 }
 
 .featured-story-kicker {
