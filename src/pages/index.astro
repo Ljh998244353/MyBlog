@@ -15,7 +15,7 @@ getTagCounts
 const posts = await getPublishedPosts();
 const featuredPost = posts[0] ?? null;
 const latestPosts = featuredPost ? posts.slice(1, 5) : posts.slice(0, 4);
-const hasLatestStack = latestPosts.length > 0;
+const hasLatestRail = latestPosts.length > 0;
 const topTags = getTagCounts(posts).slice(0, 6);
 const featuredPostPath = featuredPost ? withBase(getPostPath(featuredPost)) : withBase('/posts/');
 const featuredReadingTime = featuredPost
@@ -94,7 +94,7 @@ const heroActivity = [
           <a href={withBase('/posts/')}>查看全部</a>
         </div>
 
-        <div class:list={['latest-layout', { 'is-single': !hasLatestStack }]}>
+        <div class="latest-layout">
           <article class="featured-story">
             <div class="featured-story-body">
               <p class="featured-story-kicker">
@@ -110,28 +110,44 @@ const heroActivity = [
             </div>
           </article>
 
-          {
-            hasLatestStack && (
-              <div class="latest-stack">
-                {latestPosts.map((post) => {
+          <div class="latest-rail" aria-label="更多最新文章">
+            {
+              hasLatestRail ? (
+                latestPosts.map((post) => {
                   const postPath = withBase(getPostPath(post));
                   const readingTime = estimateReadingTime(post.body ?? post.data.description);
 
                   return (
-                    <article class="latest-compact-card">
-                      <a class="latest-compact-link" href={postPath}>
-                        <div class="latest-compact-meta">
-                          <span>{formatDate(post.data.pubDate)}</span>
-                          <span>{readingTime} 分钟阅读</span>
+                    <article class="latest-rail-item">
+                      <a class="latest-rail-link" href={postPath}>
+                        <div class="latest-rail-copy">
+                          <div class="latest-rail-meta">
+                            <span>{formatDate(post.data.pubDate)}</span>
+                            <span>{readingTime} 分钟阅读</span>
+                          </div>
+                          <h3 class="latest-rail-title">{post.data.title}</h3>
                         </div>
-                        <h3 class="latest-compact-title">{post.data.title}</h3>
+                        <span class="latest-rail-arrow" aria-hidden="true">
+                          →
+                        </span>
                       </a>
                     </article>
                   );
-                })}
-              </div>
-            )
-          }
+                })
+              ) : (
+                <article class:list={['latest-rail-item', 'latest-rail-placeholder']}>
+                  <div class="latest-rail-copy">
+                    <div class="latest-rail-meta">
+                      <span>即将更新</span>
+                      <span>更多内容整理中</span>
+                    </div>
+                    <h3 class="latest-rail-title">后续文章会按时间继续排在这里</h3>
+                  </div>
+                  <a class="button button-secondary" href={withBase('/posts/')}>浏览归档</a>
+                </article>
+              )
+            }
+          </div>
         </div>
       </section>
     )
