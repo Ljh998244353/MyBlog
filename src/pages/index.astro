@@ -25,44 +25,15 @@ const featuredReadingTime = featuredPost
 <BaseLayout image="/head.jpg">
   <section class="hero container">
     <div class="hero-copy-block">
-      <p class="eyebrow">Personal Reading Desk</p>
+      <p class="eyebrow">Personal Notes</p>
       <h1>{siteConfig.title}</h1>
       <p class="hero-copy hero-copy-strong">{siteConfig.description}</p>
-      <p class="hero-lead">
-        这里记录我在搭建博客、整理发布流程和长期维护个人站点时的学习笔记。页面优先服务阅读路径，而不是把功能说明堆在首屏。
-      </p>
       <div class="hero-actions">
         <a class="button" href={featuredPostPath}>
-          {featuredPost ? '先读这篇' : '浏览文章'}
+          {featuredPost ? '最新文章' : '浏览文章'}
         </a>
-        <a class="button button-secondary" href={withBase('/about/')}>了解这个站点</a>
-      </div>
-    </div>
-
-    <div class="hero-panel hero-profile-card">
-      <div class="hero-profile-header">
-        <img class="hero-avatar" src={withBase('/head.jpg')} alt={`${siteConfig.author} avatar`} />
-        <div>
-          <p class="hero-panel-label">当前写作方向</p>
-          <h2 class="hero-panel-title">围绕写作、发布与微调的个人站实践</h2>
-        </div>
-      </div>
-      <p class="hero-panel-note">
-        这是一个偏阅读型的个人博客：首页先给清晰入口，文章页再承接更完整的阅读体验。
-      </p>
-      <div class="hero-link-list">
-        <a class="hero-link-item" href={featuredPostPath}>
-          <strong>{featuredPost ? '从最新文章开始' : '浏览全部文章'}</strong>
-          <span>{featuredPost ? '进入阅读' : '查看列表'}</span>
-        </a>
-        <a class="hero-link-item" href={withBase('/search/')}>
-          <strong>按关键词查找内容</strong>
-          <span>搜索站内文章</span>
-        </a>
-        <a class="hero-link-item" href={withBase('/tags/')}>
-          <strong>按主题快速进入</strong>
-          <span>浏览标签归档</span>
-        </a>
+        <a class="button button-secondary" href={withBase('/posts/')}>文章归档</a>
+        <a class="button button-secondary" href={withBase('/search/')}>搜索</a>
       </div>
     </div>
   </section>
@@ -71,45 +42,28 @@ const featuredReadingTime = featuredPost
     featuredPost && (
       <section class="container section">
         <div class="section-heading">
-          <h2>从这里开始</h2>
+          <h2>最新文章</h2>
           <a href={featuredPostPath}>进入文章</a>
         </div>
 
-        <div class="entry-grid">
-          <article class="featured-story">
-            <p class="featured-story-kicker">
-              最新更新 · {formatDate(featuredPost.data.pubDate)} · {featuredReadingTime} 分钟阅读
-            </p>
-            <h3 class="featured-story-title">
-              <a href={featuredPostPath}>{featuredPost.data.title}</a>
-            </h3>
-            <p class="featured-story-description">{featuredPost.data.description}</p>
-            <div class="tag-row">
-              {featuredPost.data.tags.map((tag) => (
-                <TagChip tag={tag} />
-              ))}
-            </div>
-            <div class="featured-story-actions">
-              <a class="button" href={featuredPostPath}>打开这篇文章</a>
-              <a class="button button-secondary" href={withBase('/posts/')}>查看所有文章</a>
-            </div>
-          </article>
-
-          <div class="entry-stack">
-            <a class="entry-tile" href={withBase('/about/')}>
-              <p class="entry-tile-label">关于这个站点</p>
-              <strong>先理解博客的结构、发布方式和常见微调入口</strong>
-            </a>
-            <a class="entry-tile" href={withBase('/search/')}>
-              <p class="entry-tile-label">快速找内容</p>
-              <strong>如果你已经知道主题，可以直接用搜索缩短路径</strong>
-            </a>
-            <a class="entry-tile" href={withBase('/tags/')}>
-              <p class="entry-tile-label">按主题阅读</p>
-              <strong>从标签页进入，更适合按兴趣连续浏览同一类文章</strong>
-            </a>
+        <article class="featured-story">
+          <p class="featured-story-kicker">
+            最近更新 · {formatDate(featuredPost.data.pubDate)} · {featuredReadingTime} 分钟阅读
+          </p>
+          <h3 class="featured-story-title">
+            <a href={featuredPostPath}>{featuredPost.data.title}</a>
+          </h3>
+          <p class="featured-story-description">{featuredPost.data.description}</p>
+          <div class="tag-row">
+            {featuredPost.data.tags.map((tag) => (
+              <TagChip tag={tag} />
+            ))}
           </div>
-        </div>
+          <div class="featured-story-actions">
+            <a class="button" href={featuredPostPath}>打开文章</a>
+            <a class="button button-secondary" href={withBase('/posts/')}>查看全部</a>
+          </div>
+        </article>
       </section>
     )
   }
