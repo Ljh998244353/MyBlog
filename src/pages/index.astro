@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../components/BaseLayout.astro';
 import TagChip from '../components/TagChip.astro';
-import {
-  createExcerpt,
-  estimateReadingTime,
-  formatDate,
-  getPostPath,
-  getPublishedPosts,
-  getTagCounts
-} from '../utils/posts';
 import { withBase } from '../utils/paths';
+import {
+createExcerpt,
+estimateReadingTime,
+formatDate,
+getPostPath,
+getPublishedPosts,
+getTagCounts
+} from '../utils/posts';
 
 const posts = await getPublishedPosts();
 const featuredPost = posts[0] ?? null;
@@ -46,11 +46,7 @@ const heroActivity = [
 <BaseLayout image="/head.jpg">
   <section class="hero container">
     <div class="hero-copy-block reveal reveal-1">
-      <p class="eyebrow">开发 · 写作 · 学习</p>
-      <h1>开发、写作与学习记录</h1>
-      <p class="hero-copy hero-copy-strong">
-        围绕个人项目、问题拆解和长期积累，整理能回看的文章与笔记。
-      </p>
+      <!-- <h1>开发、写作与学习记录</h1> -->
       <div class="hero-actions reveal reveal-2">
         <a class="button" href={featuredPostPath}>
           {featuredPost ? '最新文章' : '浏览文章'}
