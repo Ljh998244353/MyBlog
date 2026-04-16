@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { formatDate, getPostPath } from '../utils/posts';
+import { estimateReadingTime, formatDate, getPostPath } from '../utils/posts';
 import { withBase } from '../utils/paths';
 import TagChip from './TagChip.astro';
 
@@ -9,12 +9,13 @@ interface Props {
 }
 
 const { post } = Astro.props;
+const readingTime = estimateReadingTime(post.body ?? post.data.description);
 ---
 
 <article class="post-card">
   <div class="post-card-meta">
-    <span>{formatDate(post.data.pubDate)}</span>
-    <span>{post.data.tags.length} 个标签</span>
+    <span class="meta-pill">{formatDate(post.data.pubDate)}</span>
+    <span class="meta-pill">{readingTime} 分钟阅读</span>
   </div>
 
   <h3 class="post-card-title">

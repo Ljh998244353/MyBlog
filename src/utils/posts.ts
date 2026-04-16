@@ -19,6 +19,16 @@ export function formatDate(date: Date) {
   }).format(date);
 }
 
+export function estimateReadingTime(source: string) {
+  const plain = stripMdx(source);
+  const cjkMatches = plain.match(/[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]/gu) ?? [];
+  const nonCjk = plain.replace(/[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]/gu, ' ');
+  const words = nonCjk.match(/[A-Za-z0-9_'-]+/g) ?? [];
+  const units = cjkMatches.length + words.length * 1.2;
+
+  return Math.max(1, Math.ceil(units / 320));
+}
+
 export function slugifySegment(value: string) {
   return value
     .normalize('NFKD')

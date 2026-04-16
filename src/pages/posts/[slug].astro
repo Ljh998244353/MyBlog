@@ -3,7 +3,12 @@ import { render } from 'astro:content';
 import BaseLayout from '../../components/BaseLayout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import TagChip from '../../components/TagChip.astro';
-import { formatDate, getPostPath, getPublishedPosts } from '../../utils/posts';
+import {
+  estimateReadingTime,
+  formatDate,
+  getPostPath,
+  getPublishedPosts
+} from '../../utils/posts';
 import { withBase } from '../../utils/paths';
 
 export async function getStaticPaths() {
@@ -21,16 +26,23 @@ export async function getStaticPaths() {
 
 const { post, newerPost, olderPost } = Astro.props;
 const { Content, headings } = await render(post);
+const readingTime = estimateReadingTime(post.body ?? post.data.description);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
   <section class="container section article-page">
     <article class="article-layout">
-      <div>
+      <div class="article-main">
         <header class="article-hero">
-          <p class="eyebrow">Published on {formatDate(post.data.pubDate)}</p>
+          <div class="article-meta-row">
+            <span class="meta-pill">发布于 {formatDate(post.data.pubDate)}</span>
+            <span class="meta-pill">{readingTime} 分钟阅读</span>
+            {post.data.updatedDate && (
+              <span class="meta-pill">更新于 {formatDate(post.data.updatedDate)}</span>
+            )}
+          </div>
           <h1>{post.data.title}</h1>
-          <p class="hero-copy">{post.data.description}</p>
+          <p class="hero-copy article-summary">{post.data.description}</p>
           <div class="tag-row">
             {post.data.tags.map((tag) => (
               <TagChip tag={tag} />

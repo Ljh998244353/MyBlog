@@ -150,6 +150,7 @@
 	// 6. 文件类型关联（精简版）
 	// ============================
 	"files.associations": {
+		"*.mdx": "markdown",
 		"*.cuh.in": "cuda-cpp",
 		// C++ 标准库容器
 		"*.tpp": "cpp",

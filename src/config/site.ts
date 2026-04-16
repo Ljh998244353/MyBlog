@@ -1,6 +1,6 @@
 export const siteConfig = {
-  title: 'LJH Notes',
-  description: '一个用 Astro 构建的静态博客，用来记录技术实践、写作流程与长期项目笔记。',
+  title: 'LJH Blogs',
+  description: '退役败犬APの学习笔记',
   author: 'LJH',
   siteUrl: 'https://ljh998244353.github.io/MyBlog',
   navigation: [
