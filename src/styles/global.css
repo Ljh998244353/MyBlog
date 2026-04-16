@@ -288,16 +288,14 @@ pre {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(2.15rem, 4vw, 3.45rem);
+  font-size: clamp(2rem, 3.7vw, 3.1rem);
   line-height: 1.04;
-  max-width: 12ch;
-  text-wrap: pretty;
 }
 
 .section-heading h1 {
   margin: 0;
   max-width: none;
-  font-size: clamp(1.9rem, 3vw, 2.55rem);
+  font-size: clamp(1.75rem, 2.8vw, 2.3rem);
   line-height: 1.02;
 }
 
@@ -452,7 +450,6 @@ pre {
 }
 
 .hero-activity-featured strong {
-  max-width: 18ch;
   font-family: var(--font-serif);
   font-size: 1.2rem;
   line-height: 1.2;
@@ -563,7 +560,6 @@ pre {
   margin: 0;
   font-size: 1.42rem;
   line-height: 1.12;
-  text-wrap: wrap;
 }
 
 .post-card-description {
@@ -583,7 +579,6 @@ pre {
 }
 
 .post-card.is-featured .post-card-description {
-  max-width: 56ch;
   font-size: 1rem;
   -webkit-line-clamp: 4;
 }
@@ -723,12 +718,10 @@ pre {
   max-width: none;
   font-size: clamp(1.6rem, 2vw, 2.2rem);
   line-height: 1.06;
-  text-wrap: wrap;
 }
 
 .featured-story-description {
   margin: 0;
-  max-width: 42ch;
   color: var(--text-soft);
   font-size: 0.97rem;
   line-height: 1.58;
@@ -799,7 +792,6 @@ pre {
   font-family: var(--font-serif);
   font-size: 1.06rem;
   line-height: 1.24;
-  text-wrap: balance;
 }
 
 .latest-rail-arrow {
@@ -889,15 +881,13 @@ pre {
 .article-hero h1 {
   margin: 0 0 1rem;
   max-width: none;
-  font-size: clamp(2.7rem, 4.5vw, 4.25rem);
+  font-size: clamp(2.35rem, 4vw, 3.7rem);
   line-height: 0.98;
   letter-spacing: -0.035em;
-  text-wrap: wrap;
 }
 
 .article-summary {
   margin: 0 0 1rem;
-  max-width: 60ch;
   font-size: 1.12rem;
   line-height: 1.82;
   color: #4d4034;
