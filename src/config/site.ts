@@ -1,6 +1,6 @@
 export const siteConfig = {
-  title: 'liu_jh の Blog',
-  description: '退役败犬APの奇妙冒险',
+  title: '退役败犬ap的奇妙冒险',
+  description: '开发、写作与学习记录',
   author: 'liu_jh',
   siteUrl: 'https://ljh998244353.github.io/MyBlog',
   navigation: [
