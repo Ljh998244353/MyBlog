@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+import SearchPanel from '../components/SearchPanel.astro';
+import { withBase } from '../utils/paths';
+---
+
+<BaseLayout title="搜索" description="搜索站内已经发布的文章内容。">
+  <section class="container section narrow-section">
+    <div class="section-heading">
+      <h1>搜索</h1>
+      <p>本地静态索引，加载后在浏览器内完成筛选。</p>
+    </div>
+
+    <SearchPanel source={withBase('/search-index.json')} />
+  </section>
+</BaseLayout>

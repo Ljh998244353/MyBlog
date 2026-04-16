@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, getPostPath } from '../utils/posts';
+import { withBase } from '../utils/paths';
+import TagChip from './TagChip.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<article class="post-card">
+  <div class="post-card-meta">
+    <span>{formatDate(post.data.pubDate)}</span>
+    <span>{post.data.tags.length} 个标签</span>
+  </div>
+
+  <h3 class="post-card-title">
+    <a href={withBase(getPostPath(post))}>{post.data.title}</a>
+  </h3>
+
+  <p class="post-card-description">{post.data.description}</p>
+
+  <div class="tag-row">
+    {post.data.tags.map((tag) => (
+      <TagChip tag={tag} />
+    ))}
+  </div>
+</article>

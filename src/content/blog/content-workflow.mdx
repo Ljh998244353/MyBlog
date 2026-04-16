@@ -1,0 +1,38 @@
+---
+title: 从写作到发布：这个博客的内容工作流
+description: 记录从新增一篇文章到本地预览、构建和 GitHub Pages 发布的最小流程。
+pubDate: 2026-04-14
+tags:
+  - 工作流
+  - GitHub Pages
+  - 写作
+draft: false
+---
+
+新增文章时，我只需要关心两件事：内容文件放在哪，以及 frontmatter 是否完整。
+
+## 新文章放在哪里
+
+所有文章都放在 `src/content/blog/` 目录，每篇文章一个 `.mdx` 文件。文件名会直接成为文章路由的一部分，所以命名要简洁、稳定。
+
+## 一篇文章最少需要什么
+
+```md
+---
+title: 文章标题
+description: 简短摘要
+pubDate: 2026-04-16
+tags:
+  - 示例
+draft: false
+---
+```
+
+## 发布流程
+
+1. 本地写完文章后运行 `npm run dev`
+2. 检查列表页、详情页、标签页和搜索是否都能找到它
+3. 运行 `npm run build`
+4. 推送到默认分支，由 GitHub Actions 自动部署到 GitHub Pages
+
+这个流程刻意保持简单，因为博客最容易被放弃的原因，往往不是写不出来，而是发布链路太重。

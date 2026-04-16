@@ -1,0 +1,69 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../components/BaseLayout.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import TagChip from '../../components/TagChip.astro';
+import { formatDate, getPostPath, getPublishedPosts } from '../../utils/posts';
+import { withBase } from '../../utils/paths';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: posts[index - 1] ?? null,
+      olderPost: posts[index + 1] ?? null
+    }
+  }));
+}
+
+const { post, newerPost, olderPost } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <section class="container section article-page">
+    <article class="article-layout">
+      <div>
+        <header class="article-hero">
+          <p class="eyebrow">Published on {formatDate(post.data.pubDate)}</p>
+          <h1>{post.data.title}</h1>
+          <p class="hero-copy">{post.data.description}</p>
+          <div class="tag-row">
+            {post.data.tags.map((tag) => (
+              <TagChip tag={tag} />
+            ))}
+          </div>
+        </header>
+
+        <div class="article-body">
+          <Content />
+        </div>
+
+        <nav class="post-nav" aria-label="文章前后导航">
+          {newerPost ? (
+            <a class="post-nav-link" href={withBase(getPostPath(newerPost))}>
+              <span>较新文章</span>
+              <strong>{newerPost.data.title}</strong>
+            </a>
+          ) : (
+            <span class="post-nav-link is-empty">已经到最新一篇</span>
+          )}
+
+          {olderPost ? (
+            <a class="post-nav-link" href={withBase(getPostPath(olderPost))}>
+              <span>较早文章</span>
+              <strong>{olderPost.data.title}</strong>
+            </a>
+          ) : (
+            <span class="post-nav-link is-empty">已经到最早一篇</span>
+          )}
+        </nav>
+      </div>
+
+      <TableOfContents headings={headings} />
+    </article>
+  </section>
+</BaseLayout>

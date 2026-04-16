@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../components/BaseLayout.astro';
+import { getPublishedPosts, getTagCounts } from '../../utils/posts';
+import { withBase } from '../../utils/paths';
+
+const posts = await getPublishedPosts();
+const tags = getTagCounts(posts);
+---
+
+<BaseLayout title="标签" description="按主题浏览站内文章。">
+  <section class="container section">
+    <div class="section-heading">
+      <h1>标签</h1>
+      <p>按主题快速进入对应文章集合。</p>
+    </div>
+
+    <div class="tag-cloud">
+      {tags.map((tag) => (
+        <a class="tag-cloud-item" href={withBase(`/tags/${tag.slug}/`)}>
+          <strong>{tag.tag}</strong>
+          <span>{tag.count} 篇</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

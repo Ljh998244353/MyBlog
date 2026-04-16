@@ -1,0 +1,25 @@
+---
+import { siteConfig } from '../config/site';
+import { withBase } from '../utils/paths';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-title">{siteConfig.title}</p>
+      <p class="footer-copy">内容优先、静态输出、适合长期维护。</p>
+    </div>
+
+    <div class="footer-links">
+      <a href={withBase('/rss.xml')}>RSS</a>
+      <a href={withBase('/search/')}>搜索</a>
+      <a href={withBase('/about/')}>关于</a>
+    </div>
+  </div>
+  <div class="container footer-meta">
+    <span>© {year} {siteConfig.author}</span>
+    <span>Built with Astro and deployed to GitHub Pages.</span>
+  </div>
+</footer>

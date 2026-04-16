@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../components/BaseLayout.astro';
+
+const description = '博客的写作原则、内容组织方式，以及这个站点如何被构建和部署。';
+---
+
+<BaseLayout title="关于" description={description}>
+  <section class="container section prose-shell">
+    <div class="section-heading">
+      <h1>关于这个博客</h1>
+    </div>
+
+    <div class="article-body">
+      <p>
+        这个站点基于 Astro 构建，采用静态输出，文章使用 MDX 维护。目标很直接：把写作和维护成本降到足够低，让内容可以长期稳定地增长。
+      </p>
+      <p>
+        首版优先保证内容体验，包括文章归档、标签聚合、目录、代码高亮、上一篇与下一篇、RSS 和搜索；不引入后台服务、评论系统或额外运行时依赖。
+      </p>
+      <h2>写作原则</h2>
+      <ul>
+        <li>每篇文章只解决一个清晰问题，避免把不同主题塞进同一篇长文。</li>
+        <li>元数据保持统一，方便后续生成列表、标签、RSS 和搜索索引。</li>
+        <li>优先写可复用的内容片段，例如代码示例、流程总结和经验清单。</li>
+      </ul>
+      <h2>站点结构</h2>
+      <ul>
+        <li>`src/content/blog/`：文章内容与 frontmatter</li>
+        <li>`src/pages/`：页面路由与静态数据接口</li>
+        <li>`src/components/`：布局、卡片、目录和 MDX 组件</li>
+        <li>`.github/workflows/`：GitHub Pages 部署流程</li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
