@@ -518,6 +518,7 @@ pre {
 
 .article-page {
   padding-top: 2rem;
+  width: min(1160px, calc(100% - 2.5rem));
 }
 
 .latest-section {
@@ -680,13 +681,14 @@ pre {
 
 .article-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 250px;
-  gap: 2rem;
+  grid-template-columns: minmax(0, 820px) minmax(220px, 260px);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  justify-content: space-between;
   align-items: start;
 }
 
 .article-main {
-  width: min(100%, 760px);
+  width: 100%;
 }
 
 .article-hero {
@@ -705,16 +707,17 @@ pre {
 .article-hero h1 {
   margin: 0 0 0.8rem;
   font-size: clamp(2.3rem, 4vw, 3.8rem);
-  line-height: 1.02;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 .article-summary {
-  max-width: 42ch;
+  max-width: 54ch;
   font-size: 1.08rem;
 }
 
 .article-body {
-  max-width: 68ch;
+  max-width: 76ch;
   font-size: 1.08rem;
   line-height: 1.8;
 }
