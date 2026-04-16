@@ -3,6 +3,7 @@ import BaseLayout from '../components/BaseLayout.astro';
 import TagChip from '../components/TagChip.astro';
 import { siteConfig } from '../config/site';
 import {
+  createExcerpt,
   estimateReadingTime,
   formatDate,
   getPostPath,
@@ -20,15 +21,18 @@ const featuredPostPath = featuredPost ? withBase(getPostPath(featuredPost)) : wi
 const featuredReadingTime = featuredPost
   ? estimateReadingTime(featuredPost.body ?? featuredPost.data.description)
   : null;
+const featuredExcerpt = featuredPost
+  ? createExcerpt(featuredPost.body ?? featuredPost.data.description, 72)
+  : '';
 ---
 
 <BaseLayout image="/head.jpg">
   <section class="hero container">
-    <div class="hero-copy-block">
+    <div class="hero-copy-block reveal reveal-1">
       <p class="eyebrow">Personal Notes</p>
       <h1>{siteConfig.title}</h1>
       <p class="hero-copy hero-copy-strong">{siteConfig.description}</p>
-      <div class="hero-actions">
+      <div class="hero-actions reveal reveal-2">
         <a class="button" href={featuredPostPath}>
           {featuredPost ? '最新文章' : '浏览文章'}
         </a>
@@ -40,7 +44,7 @@ const featuredReadingTime = featuredPost
 
   {
     featuredPost && (
-      <section class="container section">
+      <section class="container section latest-section reveal reveal-2">
         <div class="section-heading">
           <h2>最近更新</h2>
           <a href={withBase('/posts/')}>查看全部</a>
@@ -48,21 +52,17 @@ const featuredReadingTime = featuredPost
 
         <div class:list={['latest-layout', { 'is-single': !hasLatestStack }]}>
           <article class="featured-story">
-            <p class="featured-story-kicker">
-              最近更新 · {formatDate(featuredPost.data.pubDate)} · {featuredReadingTime} 分钟阅读
-            </p>
-            <h3 class="featured-story-title">
-              <a href={featuredPostPath}>{featuredPost.data.title}</a>
-            </h3>
-            <p class="featured-story-description">{featuredPost.data.description}</p>
-            <div class="tag-row">
-              {featuredPost.data.tags.map((tag) => (
-                <TagChip tag={tag} />
-              ))}
+            <div class="featured-story-body">
+              <p class="featured-story-kicker">
+                最近更新 · {formatDate(featuredPost.data.pubDate)} · {featuredReadingTime} 分钟阅读
+              </p>
+              <h3 class="featured-story-title">
+                <a href={featuredPostPath}>{featuredPost.data.title}</a>
+              </h3>
+              <p class="featured-story-description">{featuredExcerpt}</p>
             </div>
             <div class="featured-story-actions">
-              <a class="button" href={featuredPostPath}>打开文章</a>
-              <a class="button button-secondary" href={withBase('/posts/')}>查看全部</a>
+              <a class="button" href={featuredPostPath}>阅读文章</a>
             </div>
           </article>
 
@@ -75,14 +75,13 @@ const featuredReadingTime = featuredPost
 
                   return (
                     <article class="latest-compact-card">
-                      <div class="latest-compact-meta">
-                        <span>{formatDate(post.data.pubDate)}</span>
-                        <span>{readingTime} 分钟阅读</span>
-                      </div>
-                      <h3 class="latest-compact-title">
-                        <a href={postPath}>{post.data.title}</a>
-                      </h3>
-                      <p class="latest-compact-description">{post.data.description}</p>
+                      <a class="latest-compact-link" href={postPath}>
+                        <div class="latest-compact-meta">
+                          <span>{formatDate(post.data.pubDate)}</span>
+                          <span>{readingTime} 分钟阅读</span>
+                        </div>
+                        <h3 class="latest-compact-title">{post.data.title}</h3>
+                      </a>
                     </article>
                   );
                 })}
@@ -94,7 +93,7 @@ const featuredReadingTime = featuredPost
     )
   }
 
-  <section class="container section">
+  <section class="container section topic-section reveal reveal-3">
     <div class="section-heading">
       <h2>按主题浏览</h2>
       <a href={withBase('/tags/')}>浏览标签</a>
