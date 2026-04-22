@@ -13,12 +13,8 @@ const visibleHeadings = headings.filter(
 
 {
   visibleHeadings.length > 0 && (
-    <nav class="toc" aria-label="文章目录">
-      <div class="toc-header">
-        <p class="toc-kicker">阅读导航</p>
-        <p class="toc-title">目录</p>
-      </div>
-      <ol>
+    <nav class="toc" aria-label="Table of contents">
+      <ol class="toc-list">
         {visibleHeadings.map(heading => (
           <li class:list={["toc-item", `depth-${heading.depth}`]}>
             <a

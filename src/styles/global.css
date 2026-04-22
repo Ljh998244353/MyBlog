@@ -160,6 +160,89 @@ html[data-theme="dark"] {
   color: var(--color-accent);
 }
 
+.post-toc-title {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: clamp(1.85rem, 1.55rem + 1vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.post-toc-details {
+  width: 100%;
+}
+
+.post-toc-summary {
+  font-family: var(--font-mono);
+  font-size: clamp(1rem, 0.96rem + 0.15vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--color-foreground);
+  cursor: pointer;
+}
+
+.post-toc-summary:hover {
+  color: color-mix(in srgb, var(--color-accent) 70%, var(--color-foreground));
+}
+
+.post-toc-summary:focus-visible {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: 0.2rem;
+}
+
+.post-toc-body {
+  padding-inline-start: 0.15rem;
+}
+
+.post-toc .toc-list {
+  margin: 0;
+  padding-inline-start: 1.6rem;
+  list-style: disc;
+  display: grid;
+  gap: 1rem;
+}
+
+.post-toc .toc-item {
+  color: var(--color-foreground);
+}
+
+.post-toc .toc-item::marker {
+  color: var(--color-accent);
+  font-size: 1.2em;
+}
+
+.post-toc .toc-item.depth-3 {
+  margin-inline-start: 1.8rem;
+}
+
+.post-toc .toc-item.depth-3 .toc-link {
+  font-size: clamp(1.02rem, 0.98rem + 0.1vw, 1.12rem);
+}
+
+.post-toc .toc-link {
+  font-family: var(--font-mono);
+  font-size: clamp(1.12rem, 1.05rem + 0.15vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--color-foreground);
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.post-toc .toc-link:hover {
+  color: color-mix(in srgb, var(--color-accent) 80%, var(--color-foreground));
+  text-decoration-color: currentColor;
+}
+
+.post-toc .toc-link[aria-current="true"] {
+  color: var(--color-accent);
+  text-decoration-color: currentColor;
+}
+
 /* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
 /* Anything that has been anchored to should have extra scroll margin */
 :target {

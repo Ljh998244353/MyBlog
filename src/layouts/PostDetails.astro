@@ -6,6 +6,7 @@ import Footer from "@/components/Footer.astro";
 import Tag from "@/components/Tag.astro";
 import Datetime from "@/components/Datetime.astro";
 import EditPost from "@/components/EditPost.astro";
+import TableOfContents from "@/components/TableOfContents.astro";
 import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
@@ -35,7 +36,11 @@ const {
   hideEditPost,
 } = post.data;
 
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const tocHeadings = headings.filter(
+  heading => heading.depth === 2 || heading.depth === 3
+);
+const hasToc = tocHeadings.length > 0;
 
 let ogImageUrl: string | undefined;
 
@@ -114,9 +119,25 @@ const nextPost =
       <EditPost {hideEditPost} {post} />
     </div>
 
+    {
+      hasToc && (
+        <section class="post-toc mt-10" data-pagefind-ignore>
+          <h2 id="table-of-contents" class="post-toc-title">
+            Table of contents
+          </h2>
+          <details class="post-toc-details mt-4" open>
+            <summary class="post-toc-summary">Open Table of contents</summary>
+            <div class="post-toc-body mt-4">
+              <TableOfContents headings={tocHeadings} />
+            </div>
+          </details>
+        </section>
+      )
+    }
+
     <article
       id="article"
-      class="app-prose mt-8 w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
+      class="app-prose mt-10 w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
     >
       <Content />
     </article>
@@ -222,7 +243,7 @@ const nextPost =
    *  allowing sharing of sections easily */
   function addHeadingLinks() {
     const headings = Array.from(
-      document.querySelectorAll("h2, h3, h4, h5, h6")
+      document.querySelectorAll("#article h2, #article h3, #article h4, #article h5, #article h6")
     );
     for (const heading of headings) {
       heading.classList.add("group");
@@ -295,8 +316,38 @@ const nextPost =
   }
   attachCopyButtons();
 
+  function syncActiveToc() {
+    const tocLinks = Array.from(document.querySelectorAll("[data-toc-link]"));
+
+    if (tocLinks.length === 0) return;
+
+    const headings = tocLinks
+      .map(link => {
+        const id = link.getAttribute("data-target-id");
+        return id ? document.getElementById(id) : null;
+      })
+      .filter(Boolean);
+
+    if (headings.length === 0) return;
+
+    let activeId = headings[0].id;
+    const offset = 180;
+
+    for (const heading of headings) {
+      if (heading.offsetTop <= window.scrollY + offset) {
+        activeId = heading.id;
+      }
+    }
+
+    for (const link of tocLinks) {
+      const isActive = link.getAttribute("data-target-id") === activeId;
+      link.setAttribute("aria-current", isActive ? "true" : "false");
+    }
+  }
+
   function syncReadingState() {
     updateScrollProgress();
+    syncActiveToc();
   }
 
   if (!window.__postDetailScrollBound) {
