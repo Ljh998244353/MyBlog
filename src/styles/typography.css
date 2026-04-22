@@ -1,0 +1,112 @@
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  .app-prose {
+    @apply prose prose-headings:mb-3 prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-li:text-foreground prose-code:text-foreground prose-figcaption:text-foreground prose-figcaption:opacity-70 prose-img:mx-auto prose-img:rounded-md prose-hr:border-border prose-blockquote:border-s-accent prose-blockquote:bg-muted/50 prose-blockquote:py-1 prose-blockquote:pe-1 prose-blockquote:opacity-80 prose-strong:font-semibold prose-code:rounded prose-code:bg-muted prose-code:p-1 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-(--shiki-light-bg) prose-pre:text-(--shiki-light) prose-pre:before:content-none prose-pre:after:content-none prose-ol:text-foreground prose-ul:text-foreground prose-table:text-foreground prose-th:border prose-th:border-border prose-th:p-1 prose-td:border prose-td:border-border prose-td:p-1 prose-a:break-words prose-code:break-words;
+  }
+
+  .app-prose h1,
+  .app-prose h2,
+  .app-prose h3,
+  .app-prose h4,
+  .app-prose h5,
+  .app-prose h6,
+  .app-prose p,
+  .app-prose ol,
+  .app-prose ul,
+  .app-prose li,
+  .app-prose figcaption,
+  .app-prose table {
+    letter-spacing: normal;
+  }
+
+  .app-prose h1,
+  .app-prose h2,
+  .app-prose h3,
+  .app-prose h4,
+  .app-prose h5,
+  .app-prose h6,
+  .app-prose th {
+    font-family: var(--font-body);
+  }
+
+  .app-prose p,
+  .app-prose ol,
+  .app-prose ul,
+  .app-prose li,
+  .app-prose figcaption,
+  .app-prose blockquote {
+    font-family: var(--font-body);
+    line-height: 1.9;
+  }
+
+  .app-prose code,
+  .app-prose pre,
+  .app-prose kbd,
+  .app-prose samp {
+    font-family: var(--font-mono);
+  }
+
+  .app-prose a {
+    @apply break-words text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
+  }
+
+  .app-prose pre {
+    @apply rounded-md;
+  }
+
+  .app-prose blockquote p {
+    @apply my-2;
+  }
+
+  .app-prose h2#table-of-contents {
+    @apply mb-2;
+  }
+
+  .app-prose details {
+    @apply inline-block cursor-pointer text-foreground select-none [&_p]:hidden [&_ul]:my-0!;
+  }
+
+  .app-prose summary {
+    @apply focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
+  }
+
+  .app-prose h2,
+  .app-prose h3,
+  .app-prose h4,
+  .app-prose h5,
+  .app-prose h6 {
+    @apply scroll-mt-16;
+  }
+
+  /* 中文正文字体不适合斜体，保持章节标题直立。 */
+  .app-prose h3 {
+    font-style: normal;
+  }
+
+  .astro-code {
+    @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
+  }
+
+  html[data-theme="dark"] .astro-code {
+    @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
+  }
+
+  .astro-code {
+    .line.diff.add {
+      @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];
+    }
+
+    .line.diff.remove {
+      @apply relative inline-block w-full bg-red-500/20 before:absolute before:-left-3 before:text-red-500 before:content-['-'];
+    }
+
+    .line.highlighted {
+      @apply inline-block w-full bg-slate-400/20;
+    }
+
+    .highlighted-word {
+      @apply rounded-sm border border-border px-0.5 py-px;
+    }
+  }
+}

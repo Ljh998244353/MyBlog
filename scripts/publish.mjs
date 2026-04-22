@@ -1,35 +1,38 @@
-import { spawn } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { spawn } from "node:child_process";
 
-const astroBin = fileURLToPath(new URL('../node_modules/astro/bin/astro.mjs', import.meta.url));
 const env = {
   ...process.env,
-  ASTRO_TELEMETRY_DISABLED: process.env.ASTRO_TELEMETRY_DISABLED ?? '1'
+  ASTRO_TELEMETRY_DISABLED: process.env.ASTRO_TELEMETRY_DISABLED ?? "1",
 };
 
 const steps = [
-  { name: 'Validate content and routes', args: ['check'] },
-  { name: 'Build static site', args: ['build'] }
+  { name: "Validate content and routes", command: "npm", args: ["run", "check"] },
+  { name: "Build static site", command: "npm", args: ["run", "build"] },
 ];
 
 for (const step of steps) {
   console.log(`\n==> ${step.name}`);
-  await runAstro(step.args);
+  await run(step.command, step.args);
 }
 
-console.log('\nPublish preflight succeeded. Push to main to trigger GitHub Pages deployment.');
+console.log(
+  "\nPublish preflight succeeded. Push to main to trigger GitHub Pages deployment."
+);
 
-function runAstro(args) {
+function run(command, args) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [astroBin, ...args], {
-      stdio: 'inherit',
-      env
+    const child = spawn(command, args, {
+      stdio: "inherit",
+      env,
+      shell: process.platform === "win32",
     });
 
-    child.on('error', reject);
-    child.on('exit', (code, signal) => {
+    child.on("error", reject);
+    child.on("exit", (code, signal) => {
       if (signal) {
-        reject(new Error(`astro ${args.join(' ')} terminated by signal ${signal}`));
+        reject(
+          new Error(`${command} ${args.join(" ")} terminated by signal ${signal}`)
+        );
         return;
       }
 
@@ -38,7 +41,7 @@ function runAstro(args) {
         return;
       }
 
-      reject(new Error(`astro ${args.join(' ')} exited with code ${code ?? 1}`));
+      reject(new Error(`${command} ${args.join(" ")} exited with code ${code ?? 1}`));
     });
   });
 }

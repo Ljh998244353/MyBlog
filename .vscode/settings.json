@@ -1,494 +1,494 @@
 {
-	// ============================
-	// 1. 核心编辑器设置
-	// ============================
-	"editor.fontFamily": "'Fira Code', 'Sarasa Mono SC', monospace",
-	"editor.fontSize": 20,
-	"editor.fontLigatures": true,
-	"editor.letterSpacing": 0.3,
-	"editor.lineHeight": 26,
-	"editor.tabSize": 4,
-	"editor.indentSize": "tabSize",
-	"editor.insertSpaces": false,
-	"editor.detectIndentation": false,
-	// 光标设置
-	"editor.cursorStyle": "line",
-	"editor.cursorWidth": 2,
-	"editor.cursorBlinking": "smooth",
-	"editor.cursorSmoothCaretAnimation": "on",
-	// 代码显示设置
-	"editor.semanticHighlighting.enabled": true,
-	"editor.renderLineHighlight": "all",
-	"editor.renderLineHighlightOnlyWhenFocus": false,
-	"editor.bracketPairColorization.enabled": true,
-	"editor.guides.bracketPairs": "active",
-	// 建议和补全
-	"editor.suggest.snippetsPreventQuickSuggestions": false,
-	"editor.acceptSuggestionOnEnter": "on",
-	// 悬停提示
-	"editor.hover.enabled": "on",
-	"editor.hover.delay": 500,
-	"editor.hover.sticky": true,
-	// ============================
-	// 2. 文件处理设置
-	// ============================
-	"files.encoding": "utf8",
-	"files.autoSave": "afterDelay",
-	"files.autoSaveDelay": 1000,
-	"files.autoSaveWhenNoErrors": true,
-	"files.trimTrailingWhitespace": true,
-	"files.trimFinalNewlines": true,
-	"files.insertFinalNewline": true,
-	"terminal.integrated.copyOnSelection": true,
-	// ============================
-	// 3. C/C++ 开发配置（优化版）
-	// ============================
-	// --- CMake & 编译核心配置 ---
-	"cmake.configureOnOpen": true,
-	// 统一构建路径，${buildType} 会自动替换为 Debug/Release
-	"cmake.buildDirectory": "${workspaceFolder}/out/clangd",
-	"cmake.generator": "Ninja",
-	"cmake.configureSettings": {
-		"CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-	},
-	"cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
-	// --- 【核心】实现一键在 WSL 集成终端中调试 ---
-	"cmake.debugConfig": {
-		"type": "lldb",
-		"request": "launch",
-		"name": "CMake Debug",
-		"MIMode": "lldb",
-		// 关键设置：integrated 表示使用 VS Code 内部的终端，这样你可以输入数据
-		"terminal": "integrated",
-		"sourceLanguages": [
-			"cpp",
-			"c"
-		]
-	},
-	// --- 状态栏按钮与自动化 ---
-	"cmake.options.advanced": {
-		"build": {
-			"statusBarVisibility": "visible"
-		},
-		"launch": {
-			"statusBarVisibility": "visible"
-		},
-		"debug": {
-			"statusBarVisibility": "visible"
-		}
-	},
-	"cmake.revealLog": "focus",
-	"cmake.useCMakePresets": "auto",
-	"cmake.buildBeforeRun": true,
-	"cmake.parallelJobs": 8,
-	// --- Clangd 语言服务器配置 (消除界面报错) ---
-	"clangd.path": "/usr/bin/clangd",
-	"clangd.arguments": [
-		// 注意：这里的路径必须与上面的 cmake.buildDirectory 对应起来
-		// 如果你目前是 P0 项目，可以直接写死，或者使用软链接方案（见文末建议）
-		// "--compile-commands-dir=${workspaceFolder}/out/build/Debug",
-		"--compile-commands-dir=${workspaceFolder}/out/clangd",
-		"--background-index",
-		"--completion-style=detailed",
-		"--header-insertion=iwyu",
-		"--header-insertion-decorators",
-		"--clang-tidy",
-		"--fallback-style=LLVM",
-		"-j=10",
-		"--query-driver=/usr/bin/clang++*"
-	],
-	"clangd.trace": "messages",
-	"clangd.onConfigChanged": "restart",
-	"clangd.fallbackFlags": [
-		"-std=c++23",
-		"-x",
-		"cuda",
-		"--cuda-path=/usr/local/cuda-13.1",
-		"--cuda-gpu-arch=sm_89",
-		"-I/usr/local/cuda-13.1/include",
-		"-Wno-unknown-cuda-version"
-	],
-	// --- 彻底禁用微软 IntelliSense 冲突 ---
-	"C_Cpp.intelliSenseEngine": "disabled",
-	"C_Cpp.autocomplete": "disabled",
-	"C_Cpp.errorSquiggles": "disabled",
-	// --- C/C++ 扩展辅助配置 ---
-	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-	"C_Cpp.default.compilerPath": "/usr/bin/clang++-20",
-	"C_Cpp.default.cppStandard": "c++20",
-	"C_Cpp.default.intelliSenseMode": "linux-clang-x64",
-	// --- 格式化工具 ---
-	"clang-format.executable": "/usr/bin/clang-format",
-	"editor.formatOnSave": true,
-	// ============================
-	// 4. 工作区和界面设置
-	// ============================
-	"workbench.preferredDarkColorTheme": "Dracula Theme",
-	"workbench.iconTheme": "vscode-icons",
-	"workbench.panel.defaultLocation": "right",
-	"workbench.colorCustomizations": {
-		"editorCursor.foreground": "#ff008c",
-		"terminalCursor.foreground": "#ff008c",
-		"editor.lineHighlightBackground": "#2d2d30",
-		"editor.lineHighlightBorder": "#2d2d30"
-	},
-	"workbench.editor.highlightModifiedTabs": true,
-	"workbench.startupEditor": "none",
-	// ============================
-	// 5. 终端设置
-	// ============================
-	"terminal.integrated.fontFamily": "'MesloLGM Nerd Font','Sarasa Mono SC', monospace",
-	"terminal.integrated.fontSize": 16,
-	"terminal.integrated.lineHeight": 1.2,
-	"terminal.integrated.cursorStyle": "line",
-	"terminal.integrated.cursorBlinking": true,
-	"terminal.integrated.defaultProfile.windows": "Ubuntu-24.04 (WSL)",
-	"terminal.integrated.enableVisualBell": true,
-	"terminal.integrated.defaultProfile.linux": "zsh",
-	"terminal.integrated.cursorStyleInactive": "outline",
-	// ============================
-	// 6. 文件类型关联（精简版）
-	// ============================
-	"files.associations": {
-		"*.mdx": "markdown",
-		"*.cuh.in": "cuda-cpp",
-		// C++ 标准库容器
-		"*.tpp": "cpp",
-		"*.tcc": "cpp",
-		"*.inl": "cpp",
-		"*.ipp": "cpp",
-		// 标准库头文件
-		"array": "cpp",
-		"vector": "cpp",
-		"deque": "cpp",
-		"list": "cpp",
-		"forward_list": "cpp",
-		"set": "cpp",
-		"map": "cpp",
-		"unordered_set": "cpp",
-		"unordered_map": "cpp",
-		"stack": "cpp",
-		"queue": "cpp",
-		// 智能指针和内存管理
-		"memory": "cpp",
-		"scoped_allocator": "cpp",
-		"memory_resource": "cpp",
-		// 字符串和流
-		"string": "cpp",
-		"string_view": "cpp",
-		"ostream": "cpp",
-		"istream": "cpp",
-		"iostream": "cpp",
-		"fstream": "cpp",
-		"sstream": "cpp",
-		// 算法和功能
-		"algorithm": "cpp",
-		"functional": "cpp",
-		"iterator": "cpp",
-		"numeric": "cpp",
-		"random": "cpp",
-		"regex": "cpp",
-		"chrono": "cpp",
-		// C++20+ 特性
-		"ranges": "cpp",
-		"span": "cpp",
-		"format": "cpp",
-		"coroutine": "cpp",
-		"concepts": "cpp",
-		"compare": "cpp",
-		// 并发和多线程
-		"thread": "cpp",
-		"mutex": "cpp",
-		"atomic": "cpp",
-		"future": "cpp",
-		"condition_variable": "cpp",
-		// 类型特性
-		"type_traits": "cpp",
-		"typeinfo": "cpp",
-		"typeindex": "cpp",
-		"utility": "cpp",
-		"tuple": "cpp",
-		"optional": "cpp",
-		"variant": "cpp",
-		"expected": "cpp",
-		// 其他语言
-		"*.py": "python",
-		"*.cu": "cuda-cpp",
-		"*.cuh": "cuda-cpp",
-		// C 标准库
-		"stdio.h": "c",
-		"stdlib.h": "c",
-		"string.h": "c",
-		"stddef.h": "c",
-		"stdint.h": "c",
-		"math.h": "c",
-		"time.h": "c"
-	},
-	// ============================
-	// 7. 语言特定设置（优化版）
-	// ============================
-	"[python]": {
-		"editor.tabSize": 4,
-		"editor.insertSpaces": true,
-		"editor.defaultFormatter": "ms-python.python",
-		"editor.formatOnSave": true
-	},
-	"[c]": {
-		"editor.defaultFormatter": "xaver.clang-format",
-		"editor.formatOnSave": true,
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
-	"[cpp]": {
-		"editor.defaultFormatter": "xaver.clang-format",
-		"editor.formatOnSave": true,
-		"editor.formatOnPaste": false,
-		"editor.formatOnType": false,
-		"editor.tabSize": 4,
-		"editor.insertSpaces": false,
-		"editor.semanticHighlighting.enabled": true
-	},
-	"[cuda]": {
-		"editor.defaultFormatter": "xaver.clang-format",
-		"editor.formatOnSave": true,
-		"editor.tabSize": 4
-	},
-	"[cmake]": {
-		"editor.formatOnSave": true,
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
-	"[json]": {
-		"editor.formatOnSave": true,
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
-	"[yaml]": {
-		"editor.formatOnSave": true,
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
-	"[markdown]": {
-		"editor.formatOnSave": true,
-		"editor.wordWrap": "on",
-		"editor.tabSize": 2,
-		"editor.insertSpaces": true
-	},
-	// ============================
-	// 8. 汇编语言配置（保持不变）
-	// ============================
-	"masmtasm.ASM.emulator": "msdos player",
-	"masmtasm.dosbox.run": "exit",
-	"masmtasm.ASM.assembler": "MASM-v5.00",
-	"masmtasm.ASM.actions": {
-		"TASM": {
-			"baseBundle": "<built-in>/TASM.jsdos",
-			"before": [
-				"set PATH=C:\\TASM"
-			],
-			"run": [
-				"TASM ${file}",
-				"TLINK ${filename}",
-				">${filename}"
-			],
-			"debug": [
-				"TASM /zi ${file}",
-				"TLINK /v/3 ${filename}.obj",
-				"TD ${filename}.exe"
-			]
-		},
-		"MASM-v6.11": {
-			"baseBundle": "<built-in>/MASM-v6.11.jsdos",
-			"before": [
-				"set PATH=C:\\MASM"
-			],
-			"run": [
-				"masm ${file};",
-				"link ${filename};",
-				">${filename}"
-			],
-			"debug": [
-				"masm ${file};",
-				"link ${filename}.OBJ;",
-				">debug ${filename}.exe"
-			]
-		},
-		"MASM-v5.00": {
-			"baseBundle": "<built-in>/MASM-v5.00.jsdos",
-			"before": [
-				"set PATH=C:\\MASM"
-			],
-			"run": [
-				"masm ${file};",
-				"link ${filename};",
-				">${filename}"
-			],
-			"debug": [
-				"masm ${file};",
-				"link ${filename}.OBJ;",
-				">debug ${filename}.exe"
-			],
-			"support": [
-				"jsdos",
-				"dosbox",
-				"dosboxX",
-				"msdos player"
-			]
-		}
-	},
-	// ============================
-	// 9. LaTeX 配置（优化版）
-	// ============================
-	"latex-workshop.latex.autoBuild.run": "never",
-	"latex-workshop.showContextMenu": true,
-	"latex-workshop.intellisense.package.enabled": true,
-	"latex-workshop.message.error.show": false,
-	"latex-workshop.message.warning.show": false,
-	"latex-workshop.latex.autoClean.run": "onFailed",
-	"latex-workshop.latex.recipe.default": "lastUsed",
-	"latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
-	// LaTeX 工具链
-	"latex-workshop.latex.tools": [
-		{
-			"name": "xelatex",
-			"command": "xelatex",
-			"args": [
-				"-synctex=1",
-				"--shell-escape",
-				"-interaction=nonstopmode",
-				"-file-line-error",
-				"%DOCFILE%"
-			]
-		},
-		{
-			"name": "pdflatex",
-			"command": "pdflatex",
-			"args": [
-				"-synctex=1",
-				"-interaction=nonstopmode",
-				"-file-line-error",
-				"%DOCFILE%"
-			]
-		},
-		{
-			"name": "latexmk",
-			"command": "latexmk",
-			"args": [
-				"-synctex=1",
-				"-interaction=nonstopmode",
-				"-file-line-error",
-				"-pdf",
-				"-outdir=%OUTDIR%",
-				"%DOCFILE%"
-			]
-		},
-		{
-			"name": "bibtex",
-			"command": "bibtex",
-			"args": [
-				"%DOCFILE%"
-			]
-		}
-	],
-	// LaTeX 配方
-	"latex-workshop.latex.recipes": [
-		{
-			"name": "XeLaTeX",
-			"tools": [
-				"xelatex"
-			]
-		},
-		{
-			"name": "PDFLaTeX",
-			"tools": [
-				"pdflatex"
-			]
-		},
-		{
-			"name": "BibTeX",
-			"tools": [
-				"bibtex"
-			]
-		},
-		{
-			"name": "LaTeXmk",
-			"tools": [
-				"latexmk"
-			]
-		},
-		{
-			"name": "xelatex -> bibtex -> xelatex*2",
-			"tools": [
-				"xelatex",
-				"bibtex",
-				"xelatex",
-				"xelatex"
-			]
-		},
-		{
-			"name": "pdflatex -> bibtex -> pdflatex*2",
-			"tools": [
-				"pdflatex",
-				"bibtex",
-				"pdflatex",
-				"pdflatex"
-			]
-		}
-	],
-	// LaTeX 清理文件
-	"latex-workshop.latex.clean.fileTypes": [
-		"*.aux",
-		"*.bbl",
-		"*.blg",
-		"*.idx",
-		"*.ind",
-		"*.lof",
-		"*.lot",
-		"*.out",
-		"*.toc",
-		"*.acn",
-		"*.acr",
-		"*.alg",
-		"*.glg",
-		"*.glo",
-		"*.gls",
-		"*.ist",
-		"*.fls",
-		"*.log",
-		"*.fdb_latexmk"
-	],
-	// ============================
-	// 10. 其他配置
-	// ============================
-	"editor.codeActionsOnSave": {
-		"source.fixAll": "explicit",
-		"source.organizeImports": "explicit"
-	},
-	"accessibility.signals.terminalBell": {
-		"sound": "on"
-	},
-	"remote.autoForwardPortsFallback": 0,
-	// 文件排除
-	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/CVS": true,
-		"**/.DS_Store": true,
-		"**/Thumbs.db": true,
-		"build/": true,
-		"**/*.o": true,
-		"**/*.obj": true,
-		"**/*.exe": true,
-		"**/*.out": true
-	},
-	// 搜索配置
-	"search.exclude": {
-		"**/node_modules": true,
-		"**/bower_components": true,
-		"**/*.code-search": true,
-		"build/": true
-	},
-	"python-envs.defaultEnvManager": "ms-python.python:conda",
-	"python-envs.defaultPackageManager": "ms-python.python:conda",
+    // ============================
+    // 1. 核心编辑器设置
+    // ============================
+    "editor.fontFamily": "'Fira Code', 'Sarasa Mono SC', monospace",
+    "editor.fontSize": 20,
+    "editor.fontLigatures": true,
+    "editor.letterSpacing": 0.3,
+    "editor.lineHeight": 26,
+    "editor.tabSize": 4,
+    "editor.indentSize": "tabSize",
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    // 光标设置
+    "editor.cursorStyle": "line",
+    "editor.cursorWidth": 2,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorSmoothCaretAnimation": "on",
+    // 代码显示设置
+    "editor.semanticHighlighting.enabled": true,
+    "editor.renderLineHighlight": "all",
+    "editor.renderLineHighlightOnlyWhenFocus": false,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    // 建议和补全
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.acceptSuggestionOnEnter": "on",
+    // 悬停提示
+    "editor.hover.enabled": "on",
+    "editor.hover.delay": 500,
+    "editor.hover.sticky": true,
+    // ============================
+    // 2. 文件处理设置
+    // ============================
+    "files.encoding": "utf8",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "files.autoSaveWhenNoErrors": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "terminal.integrated.copyOnSelection": true,
+    // ============================
+    // 3. C/C++ 开发配置（优化版）
+    // ============================
+    // --- CMake & 编译核心配置 ---
+    "cmake.configureOnOpen": true,
+    // 统一构建路径，${buildType} 会自动替换为 Debug/Release
+    "cmake.buildDirectory": "${workspaceFolder}/out/clangd",
+    "cmake.generator": "Ninja",
+    "cmake.configureSettings": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+    },
+    "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+    // --- 【核心】实现一键在 WSL 集成终端中调试 ---
+    "cmake.debugConfig": {
+        "type": "lldb",
+        "request": "launch",
+        "name": "CMake Debug",
+        "MIMode": "lldb",
+        // 关键设置：integrated 表示使用 VS Code 内部的终端，这样你可以输入数据
+        "terminal": "integrated",
+        "sourceLanguages": [
+            "cpp",
+            "c"
+        ]
+    },
+    // --- 状态栏按钮与自动化 ---
+    "cmake.options.advanced": {
+        "build": {
+            "statusBarVisibility": "visible"
+        },
+        "launch": {
+            "statusBarVisibility": "visible"
+        },
+        "debug": {
+            "statusBarVisibility": "visible"
+        }
+    },
+    "cmake.revealLog": "focus",
+    "cmake.useCMakePresets": "auto",
+    "cmake.buildBeforeRun": true,
+    "cmake.parallelJobs": 8,
+    // --- Clangd 语言服务器配置 (消除界面报错) ---
+    "clangd.path": "/usr/bin/clangd",
+    "clangd.arguments": [
+        // 注意：这里的路径必须与上面的 cmake.buildDirectory 对应起来
+        // 如果你目前是 P0 项目，可以直接写死，或者使用软链接方案（见文末建议）
+        // "--compile-commands-dir=${workspaceFolder}/out/build/Debug",
+        "--compile-commands-dir=${workspaceFolder}/out/clangd",
+        "--background-index",
+        "--completion-style=detailed",
+        "--header-insertion=iwyu",
+        "--header-insertion-decorators",
+        "--clang-tidy",
+        "--fallback-style=LLVM",
+        "-j=10",
+        "--query-driver=/usr/bin/clang++*"
+    ],
+    "clangd.trace": "messages",
+    "clangd.onConfigChanged": "restart",
+    "clangd.fallbackFlags": [
+        "-std=c++23",
+        "-x",
+        "cuda",
+        "--cuda-path=/usr/local/cuda-13.1",
+        "--cuda-gpu-arch=sm_89",
+        "-I/usr/local/cuda-13.1/include",
+        "-Wno-unknown-cuda-version"
+    ],
+    // --- 彻底禁用微软 IntelliSense 冲突 ---
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    // --- C/C++ 扩展辅助配置 ---
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.compilerPath": "/usr/bin/clang++-20",
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
+    // --- 格式化工具 ---
+    "clang-format.executable": "/usr/bin/clang-format",
+    "editor.formatOnSave": true,
+    // ============================
+    // 4. 工作区和界面设置
+    // ============================
+    "workbench.preferredDarkColorTheme": "Dracula Theme",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.panel.defaultLocation": "right",
+    "workbench.colorCustomizations": {
+        "editorCursor.foreground": "#ff008c",
+        "terminalCursor.foreground": "#ff008c",
+        "editor.lineHighlightBackground": "#2d2d30",
+        "editor.lineHighlightBorder": "#2d2d30"
+    },
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.startupEditor": "none",
+    // ============================
+    // 5. 终端设置
+    // ============================
+    "terminal.integrated.fontFamily": "'MesloLGM Nerd Font','Sarasa Mono SC', monospace",
+    "terminal.integrated.fontSize": 16,
+    "terminal.integrated.lineHeight": 1.2,
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.defaultProfile.windows": "Ubuntu-24.04 (WSL)",
+    "terminal.integrated.enableVisualBell": true,
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.cursorStyleInactive": "outline",
+    // ============================
+    // 6. 文件类型关联（精简版）
+    // ============================
+    "files.associations": {
+        "*.mdx": "markdown",
+        "*.cuh.in": "cuda-cpp",
+        // C++ 标准库容器
+        "*.tpp": "cpp",
+        "*.tcc": "cpp",
+        "*.inl": "cpp",
+        "*.ipp": "cpp",
+        // 标准库头文件
+        "array": "cpp",
+        "vector": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "forward_list": "cpp",
+        "set": "cpp",
+        "map": "cpp",
+        "unordered_set": "cpp",
+        "unordered_map": "cpp",
+        "stack": "cpp",
+        "queue": "cpp",
+        // 智能指针和内存管理
+        "memory": "cpp",
+        "scoped_allocator": "cpp",
+        "memory_resource": "cpp",
+        // 字符串和流
+        "string": "cpp",
+        "string_view": "cpp",
+        "ostream": "cpp",
+        "istream": "cpp",
+        "iostream": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp",
+        // 算法和功能
+        "algorithm": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "regex": "cpp",
+        "chrono": "cpp",
+        // C++20+ 特性
+        "ranges": "cpp",
+        "span": "cpp",
+        "format": "cpp",
+        "coroutine": "cpp",
+        "concepts": "cpp",
+        "compare": "cpp",
+        // 并发和多线程
+        "thread": "cpp",
+        "mutex": "cpp",
+        "atomic": "cpp",
+        "future": "cpp",
+        "condition_variable": "cpp",
+        // 类型特性
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "typeindex": "cpp",
+        "utility": "cpp",
+        "tuple": "cpp",
+        "optional": "cpp",
+        "variant": "cpp",
+        "expected": "cpp",
+        // 其他语言
+        "*.py": "python",
+        "*.cu": "cuda-cpp",
+        "*.cuh": "cuda-cpp",
+        // C 标准库
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "string.h": "c",
+        "stddef.h": "c",
+        "stdint.h": "c",
+        "math.h": "c",
+        "time.h": "c"
+    },
+    // ============================
+    // 7. 语言特定设置（优化版）
+    // ============================
+    "[python]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    },
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
+        "editor.semanticHighlighting.enabled": true
+    },
+    "[cuda]": {
+        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4
+    },
+    "[cmake]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "[json]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "[yaml]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.wordWrap": "on",
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true
+    },
+    // ============================
+    // 8. 汇编语言配置（保持不变）
+    // ============================
+    "masmtasm.ASM.emulator": "msdos player",
+    "masmtasm.dosbox.run": "exit",
+    "masmtasm.ASM.assembler": "MASM-v5.00",
+    "masmtasm.ASM.actions": {
+        "TASM": {
+            "baseBundle": "<built-in>/TASM.jsdos",
+            "before": [
+                "set PATH=C:\\TASM"
+            ],
+            "run": [
+                "TASM ${file}",
+                "TLINK ${filename}",
+                ">${filename}"
+            ],
+            "debug": [
+                "TASM /zi ${file}",
+                "TLINK /v/3 ${filename}.obj",
+                "TD ${filename}.exe"
+            ]
+        },
+        "MASM-v6.11": {
+            "baseBundle": "<built-in>/MASM-v6.11.jsdos",
+            "before": [
+                "set PATH=C:\\MASM"
+            ],
+            "run": [
+                "masm ${file};",
+                "link ${filename};",
+                ">${filename}"
+            ],
+            "debug": [
+                "masm ${file};",
+                "link ${filename}.OBJ;",
+                ">debug ${filename}.exe"
+            ]
+        },
+        "MASM-v5.00": {
+            "baseBundle": "<built-in>/MASM-v5.00.jsdos",
+            "before": [
+                "set PATH=C:\\MASM"
+            ],
+            "run": [
+                "masm ${file};",
+                "link ${filename};",
+                ">${filename}"
+            ],
+            "debug": [
+                "masm ${file};",
+                "link ${filename}.OBJ;",
+                ">debug ${filename}.exe"
+            ],
+            "support": [
+                "jsdos",
+                "dosbox",
+                "dosboxX",
+                "msdos player"
+            ]
+        }
+    },
+    // ============================
+    // 9. LaTeX 配置（优化版）
+    // ============================
+    "latex-workshop.latex.autoBuild.run": "never",
+    "latex-workshop.showContextMenu": true,
+    "latex-workshop.intellisense.package.enabled": true,
+    "latex-workshop.message.error.show": false,
+    "latex-workshop.message.warning.show": false,
+    "latex-workshop.latex.autoClean.run": "onFailed",
+    "latex-workshop.latex.recipe.default": "lastUsed",
+    "latex-workshop.view.pdf.internal.synctex.keybinding": "double-click",
+    // LaTeX 工具链
+    "latex-workshop.latex.tools": [
+        {
+            "name": "xelatex",
+            "command": "xelatex",
+            "args": [
+                "-synctex=1",
+                "--shell-escape",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "-outdir=%OUTDIR%",
+                "%DOCFILE%"
+            ]
+        },
+        {
+            "name": "bibtex",
+            "command": "bibtex",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ],
+    // LaTeX 配方
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "XeLaTeX",
+            "tools": [
+                "xelatex"
+            ]
+        },
+        {
+            "name": "PDFLaTeX",
+            "tools": [
+                "pdflatex"
+            ]
+        },
+        {
+            "name": "BibTeX",
+            "tools": [
+                "bibtex"
+            ]
+        },
+        {
+            "name": "LaTeXmk",
+            "tools": [
+                "latexmk"
+            ]
+        },
+        {
+            "name": "xelatex -> bibtex -> xelatex*2",
+            "tools": [
+                "xelatex",
+                "bibtex",
+                "xelatex",
+                "xelatex"
+            ]
+        },
+        {
+            "name": "pdflatex -> bibtex -> pdflatex*2",
+            "tools": [
+                "pdflatex",
+                "bibtex",
+                "pdflatex",
+                "pdflatex"
+            ]
+        }
+    ],
+    // LaTeX 清理文件
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux",
+        "*.bbl",
+        "*.blg",
+        "*.idx",
+        "*.ind",
+        "*.lof",
+        "*.lot",
+        "*.out",
+        "*.toc",
+        "*.acn",
+        "*.acr",
+        "*.alg",
+        "*.glg",
+        "*.glo",
+        "*.gls",
+        "*.ist",
+        "*.fls",
+        "*.log",
+        "*.fdb_latexmk"
+    ],
+    // ============================
+    // 10. 其他配置
+    // ============================
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "accessibility.signals.terminalBell": {
+        "sound": "on"
+    },
+    "remote.autoForwardPortsFallback": 0,
+    // 文件排除
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "build/": true,
+        "**/*.o": true,
+        "**/*.obj": true,
+        "**/*.exe": true,
+        "**/*.out": true
+    },
+    // 搜索配置
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "build/": true
+    },
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
 }

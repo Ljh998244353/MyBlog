@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { withBase } from "@/utils/site";
+
+type Props = { disabled?: boolean } & HTMLAttributes<"a">;
+
+const { disabled, class: className, href: rawHref, ...attrs } = Astro.props;
+const href = typeof rawHref === "string" ? withBase(rawHref) : rawHref;
+
+const Button = disabled ? "span" : "a";
+---
+
+<Button
+  aria-disabled={disabled}
+  class:list={[
+    "group inline-flex items-center gap-1",
+    { "hover:text-accent": !disabled },
+    className,
+  ]}
+  href={href}
+  {...attrs}
+>
+  <slot />
+</Button>

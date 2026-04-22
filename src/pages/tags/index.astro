@@ -1,26 +1,24 @@
 ---
-import BaseLayout from '../../components/BaseLayout.astro';
-import { getPublishedPosts, getTagCounts } from '../../utils/posts';
-import { withBase } from '../../utils/paths';
+import { getCollection } from "astro:content";
+import Main from "@/layouts/Main.astro";
+import Layout from "@/layouts/Layout.astro";
+import Tag from "@/components/Tag.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import getUniqueTags from "@/utils/getUniqueTags";
+import { SITE } from "@/config";
 
-const posts = await getPublishedPosts();
-const tags = getTagCounts(posts);
+const posts = await getCollection("blog");
+
+let tags = getUniqueTags(posts);
 ---
 
-<BaseLayout title="标签" description="按主题浏览站内文章。">
-  <section class="container section">
-    <div class="section-heading">
-      <h1>标签</h1>
-      <p>按主题快速进入对应文章集合。</p>
-    </div>
-
-    <div class="tag-cloud">
-      {tags.map((tag) => (
-        <a class="tag-cloud-item" href={withBase(`/tags/${tag.slug}/`)}>
-          <strong>{tag.tag}</strong>
-          <span>{tag.count} 篇</span>
-        </a>
-      ))}
-    </div>
-  </section>
-</BaseLayout>
+<Layout title={`标签 | ${SITE.title}`}>
+  <Header />
+  <Main pageTitle="标签" pageDesc="按标签浏览文章与笔记。">
+    <ul class="flex flex-wrap gap-6">
+      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
+    </ul>
+  </Main>
+  <Footer />
+</Layout>
