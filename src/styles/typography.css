@@ -3,6 +3,8 @@
 @layer base {
   .app-prose {
     @apply prose prose-headings:mb-3 prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-li:text-foreground prose-code:text-foreground prose-figcaption:text-foreground prose-figcaption:opacity-70 prose-img:mx-auto prose-img:rounded-md prose-hr:border-border prose-blockquote:border-s-accent prose-blockquote:bg-muted/50 prose-blockquote:py-1 prose-blockquote:pe-1 prose-blockquote:opacity-80 prose-strong:font-semibold prose-code:rounded prose-code:bg-muted prose-code:p-1 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-(--shiki-light-bg) prose-pre:text-(--shiki-light) prose-pre:before:content-none prose-pre:after:content-none prose-ol:text-foreground prose-ul:text-foreground prose-table:text-foreground prose-th:border prose-th:border-border prose-th:p-1 prose-td:border prose-td:border-border prose-td:p-1 prose-a:break-words prose-code:break-words;
+    max-width: min(100%, calc(65ch + 2ic));
+    font-size: clamp(1.04rem, 1rem + 0.16vw, 1.12rem);
   }
 
   .app-prose h1,
@@ -27,7 +29,7 @@
   .app-prose h5,
   .app-prose h6,
   .app-prose th {
-    font-family: var(--font-body);
+    font-family: var(--font-title);
   }
 
   .app-prose p,
@@ -37,26 +39,174 @@
   .app-prose figcaption,
   .app-prose blockquote {
     font-family: var(--font-body);
-    line-height: 1.9;
+    line-height: 1.92;
+    letter-spacing: 0.01em;
+  }
+
+  .app-prose > p:first-of-type {
+    font-size: clamp(1.12rem, 1.06rem + 0.22vw, 1.24rem);
+    line-height: 1.88;
   }
 
   .app-prose code,
   .app-prose pre,
   .app-prose kbd,
   .app-prose samp {
-    font-family: var(--font-mono);
+    font-family: var(--font-code);
+    font-variant-ligatures: none;
   }
 
   .app-prose a {
     @apply break-words text-foreground decoration-dashed underline-offset-4 hover:text-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent focus-visible:outline-dashed;
   }
 
+  .app-prose :not(pre) > code {
+    border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
+    border-radius: 0.55rem;
+    background: color-mix(in srgb, var(--muted) 58%, var(--background));
+    padding: 0.16em 0.46em;
+    font-size: 0.9em;
+    font-weight: 520;
+    letter-spacing: 0;
+    word-spacing: normal;
+  }
+
   .app-prose pre {
-    @apply rounded-md;
+    @apply rounded-xl;
+    margin-block: 2rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+    padding: 2.65rem 1.15rem 1rem;
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    scrollbar-gutter: stable;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html[data-theme="dark"] .app-prose pre {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .app-prose pre code {
+    display: block;
+    min-width: max-content;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-family: var(--font-code);
+    font-size: clamp(0.92rem, 0.89rem + 0.1vw, 0.98rem);
+    font-weight: 430;
+    line-height: 1.56;
+    letter-spacing: 0;
+    word-spacing: normal;
   }
 
   .app-prose blockquote p {
     @apply my-2;
+  }
+
+  .code-block-shell {
+    position: relative;
+  }
+
+  .code-block-shell .copy-code {
+    position: absolute;
+    inset-block-start: 0.9rem;
+    inset-inline-end: 0.9rem;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.5rem;
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 88%, transparent);
+    padding: 0.48rem 0.72rem;
+    font-family: var(--font-ui);
+    font-size: 0.74rem;
+    font-weight: 560;
+    line-height: 1;
+    letter-spacing: 0.035em;
+    color: color-mix(in srgb, var(--foreground) 88%, var(--accent));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    transition:
+      transform 180ms ease,
+      color 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .code-block-shell .copy-code:hover {
+    transform: translateY(-1px);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+    background: color-mix(in srgb, var(--background) 94%, var(--muted));
+  }
+
+  .code-block-shell .copy-code:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 3px;
+  }
+
+  .code-block-file-label {
+    position: absolute;
+    inset-inline-start: 0.95rem;
+    z-index: 3;
+    display: inline-flex;
+    max-width: min(26rem, calc(100% - 6.5rem));
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--background) 90%, transparent);
+    padding: 0.5rem 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    font-weight: 560;
+    line-height: 1;
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: color-mix(in srgb, var(--foreground) 88%, var(--accent));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .code-block-file-label--badge {
+    inset-block-start: 0.9rem;
+  }
+
+  .code-block-file-label--tab {
+    inset-block-start: 0.9rem;
+    border-end-start-radius: 0.75rem;
+    border-end-end-radius: 0.75rem;
+  }
+
+  .code-block-file-label--dot::before {
+    content: "";
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .app-prose figcaption,
+  .app-prose table,
+  .app-prose th,
+  .app-prose td {
+    font-family: var(--font-ui);
+    letter-spacing: 0.012em;
+  }
+
+  .app-prose h2 {
+    font-size: clamp(1.62rem, 1.48rem + 0.46vw, 1.92rem);
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    line-height: 1.32;
   }
 
   .app-prose h2#table-of-contents {
@@ -81,11 +231,21 @@
 
   /* 中文正文字体不适合斜体，保持章节标题直立。 */
   .app-prose h3 {
+    font-family: var(--font-ui);
     font-style: normal;
+    font-size: clamp(1.18rem, 1.11rem + 0.24vw, 1.36rem);
+    font-weight: 600;
+    letter-spacing: 0.026em;
+    line-height: 1.55;
+  }
+
+  .app-prose strong {
+    letter-spacing: 0.008em;
   }
 
   .astro-code {
     @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
+    align-items: stretch;
   }
 
   html[data-theme="dark"] .astro-code {
@@ -93,20 +253,55 @@
   }
 
   .astro-code {
+    code {
+      width: 100%;
+      white-space: normal;
+    }
+
+    .line {
+      display: block;
+      width: max-content;
+      min-width: 100%;
+      white-space: pre;
+      line-height: inherit;
+      padding-inline: 0.42rem;
+      border-radius: 0.45rem;
+    }
+
     .line.diff.add {
-      @apply relative inline-block w-full bg-green-400/20 before:absolute before:-left-3 before:text-green-500 before:content-['+'];
+      @apply relative bg-green-400/14;
+      padding-inline-start: 1.45rem;
+    }
+
+    .line.diff.add::before {
+      content: "+";
+      position: absolute;
+      inset-inline-start: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgb(34 197 94);
     }
 
     .line.diff.remove {
-      @apply relative inline-block w-full bg-red-500/20 before:absolute before:-left-3 before:text-red-500 before:content-['-'];
+      @apply relative bg-red-500/14;
+      padding-inline-start: 1.45rem;
+    }
+
+    .line.diff.remove::before {
+      content: "-";
+      position: absolute;
+      inset-inline-start: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgb(239 68 68);
     }
 
     .line.highlighted {
-      @apply inline-block w-full bg-slate-400/20;
+      @apply bg-slate-400/16;
     }
 
     .highlighted-word {
-      @apply rounded-sm border border-border px-0.5 py-px;
+      @apply rounded-md border border-border px-1 py-px;
     }
   }
 }

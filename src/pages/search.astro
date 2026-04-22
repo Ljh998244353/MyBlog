@@ -98,7 +98,7 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : withBase("/");
 
 <style is:global>
   #pagefind-search {
-    --pagefind-ui-font: var(--font-mono);
+    --pagefind-ui-font: var(--font-ui);
     --pagefind-ui-text: var(--foreground);
     --pagefind-ui-background: var(--background);
     --pagefind-ui-border: var(--border);
@@ -114,7 +114,9 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : withBase("/");
     }
 
     input {
+      font-family: var(--font-ui);
       font-weight: 400;
+      letter-spacing: 0.012em;
       border: 1px solid var(--border);
     }
 
@@ -122,10 +124,21 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : withBase("/");
       outline: 1px solid var(--accent);
     }
 
+    .pagefind-ui__result-title {
+      font-family: var(--font-title);
+      letter-spacing: 0.012em;
+    }
+
     .pagefind-ui__result-title a {
       color: var(--accent);
       outline-offset: 1px;
       outline-color: var(--accent);
+    }
+
+    .pagefind-ui__result-excerpt {
+      font-family: var(--font-body);
+      line-height: 1.8;
+      letter-spacing: 0.01em;
     }
 
     .pagefind-ui__result-title a:focus-visible,
@@ -140,7 +153,7 @@ const backUrl = SITE.showBackButton ? `${Astro.url.pathname}` : withBase("/");
     }
 
     .pagefind-ui__result-nested .pagefind-ui__result-link:before {
-      font-family: system-ui;
+      font-family: var(--font-ui);
     }
   }
 </style>

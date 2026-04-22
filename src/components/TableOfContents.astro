@@ -13,13 +13,15 @@ const visibleHeadings = headings.filter(
 
 {
   visibleHeadings.length > 0 && (
-    <nav class="toc" aria-label="Table of contents">
+    <nav class="toc" aria-label="Table of contents" data-toc-nav>
+      <span class="toc-cursor" aria-hidden="true" data-toc-cursor></span>
       <ol class="toc-list">
         {visibleHeadings.map(heading => (
           <li class:list={["toc-item", `depth-${heading.depth}`]}>
             <a
               href={`#${heading.slug}`}
               class="toc-link"
+              title={heading.text}
               data-toc-link
               data-target-id={heading.slug}
             >

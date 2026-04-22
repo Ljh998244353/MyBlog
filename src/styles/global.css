@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "./typography.css";
 
@@ -10,20 +11,37 @@ html[data-theme="light"] {
   --accent: #006cac;
   --muted: #e6e6e6;
   --border: #ece9e9;
+  --layout-content-max: calc(48rem + 6ic);
+  --layout-post-content-max: var(--layout-content-max);
+  --post-toc-width: clamp(10.5rem, 11vw, 12rem);
+  --post-toc-gap: clamp(2.2rem, 3.4vw, 4rem);
   --page-glow-primary: rgba(0, 108, 172, 0.12);
   --page-glow-secondary: rgba(40, 39, 40, 0.05);
   --font-display:
-    ui-rounded, "SF Pro Rounded", "Avenir Next Rounded", "Arial Rounded MT Bold",
-    "Trebuchet MS", "Segoe UI", sans-serif;
+    "Avenir Next Rounded", "SF Pro Rounded", ui-rounded, "Avenir Next",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Segoe UI",
+    sans-serif;
   --font-ui:
-    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei UI", "Noto Sans CJK SC",
-    "Noto Sans SC", "Segoe UI", sans-serif;
+    "Avenir Next", "SF Pro Text", "PingFang SC", "Hiragino Sans GB",
+    "Source Han Sans SC", "Noto Sans CJK SC", "Noto Sans SC",
+    "Microsoft YaHei UI", "Segoe UI", ui-sans-serif, sans-serif;
+  --font-title:
+    "Cormorant Garamond", "Newsreader", "Iowan Old Style", "Baskerville",
+    "Palatino Linotype", "Times New Roman",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
+    ui-serif, serif;
   --font-body:
-    "Iowan Old Style", "Palatino Linotype", "Noto Serif CJK SC",
-    "Source Han Serif SC", "Songti SC", "STSong", serif;
+    "Newsreader", "Charter", "Iowan Old Style", "Georgia", "Palatino Linotype",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
+    ui-serif, serif;
   --font-mono:
-    "Maple Mono", "JetBrains Mono", "IBM Plex Mono", "Cascadia Mono",
-    "SFMono-Regular", "Consolas", monospace;
+    "Maple Mono", "Sarasa Mono SC", "Noto Sans Mono CJK SC",
+    "JetBrains Mono", "IBM Plex Mono", "Cascadia Mono", "SFMono-Regular",
+    "Consolas", "PingFang SC", monospace;
+  --font-code:
+    "Sarasa Mono SC", "Noto Sans Mono CJK SC", "Cascadia Mono",
+    "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", "Consolas",
+    "Maple Mono", monospace;
 }
 
 html[data-theme="dark"] {
@@ -61,6 +79,9 @@ html[data-theme="dark"] {
     background-attachment: fixed;
     font-family: var(--font-ui);
     font-weight: 450;
+    line-height: 1.7;
+    font-kerning: normal;
+    font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -79,8 +100,11 @@ html[data-theme="dark"] {
   h4,
   h5,
   h6 {
-    font-family: var(--font-body);
-    letter-spacing: 0.01em;
+    font-family: var(--font-title);
+    font-weight: 650;
+    letter-spacing: 0.012em;
+    line-height: 1.2;
+    text-wrap: wrap;
   }
   code,
   pre,
@@ -91,7 +115,17 @@ html[data-theme="dark"] {
 }
 
 @utility max-w-app {
-  @apply max-w-3xl;
+  max-width: var(--layout-content-max);
+}
+
+@utility max-w-post-content {
+  max-width: var(--layout-post-content-max);
+}
+
+@utility max-w-post {
+  max-width: calc(
+    var(--layout-post-content-max) + var(--post-toc-width) + var(--post-toc-gap)
+  );
 }
 
 @utility app-layout {
@@ -127,8 +161,8 @@ html[data-theme="dark"] {
   align-items: baseline;
   font-family: var(--font-display);
   font-variant-ligatures: none;
-  font-weight: 700;
-  letter-spacing: 0.035em;
+  font-weight: 680;
+  letter-spacing: 0.028em;
 }
 
 .site-brand-token {
@@ -146,13 +180,40 @@ html[data-theme="dark"] {
 
 .site-brand-tail {
   display: inline-block;
-  font-family: var(--font-body);
-  font-weight: 600;
-  letter-spacing: 0.025em;
+  font-family: var(--font-title);
+  font-weight: 580;
+  letter-spacing: 0.03em;
 }
 
 .site-brand-home .site-brand-handle {
   letter-spacing: 0.025em;
+}
+
+.page-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: 0.016em;
+  line-height: 1.18;
+  text-wrap: wrap;
+}
+
+.page-desc {
+  font-family: var(--font-ui);
+  letter-spacing: 0.012em;
+  opacity: 0.82;
+}
+
+.post-title {
+  font-family: var(--font-title);
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  line-height: 1.16;
+  text-wrap: wrap;
+}
+
+.post-meta {
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
 }
 
 .site-brand-link:hover .site-brand-handle,
@@ -162,10 +223,10 @@ html[data-theme="dark"] {
 
 .post-toc-title {
   margin: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-title);
   font-size: clamp(1.85rem, 1.55rem + 1vw, 2.6rem);
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
   line-height: 1.1;
 }
 
@@ -174,8 +235,9 @@ html[data-theme="dark"] {
 }
 
 .post-toc-summary {
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: clamp(1rem, 0.96rem + 0.15vw, 1.15rem);
+  letter-spacing: 0.018em;
   line-height: 1.55;
   color: var(--color-foreground);
   cursor: pointer;
@@ -194,12 +256,66 @@ html[data-theme="dark"] {
   padding-inline-start: 0.15rem;
 }
 
+.post-layout {
+  width: 100%;
+}
+
+@media (min-width: 80rem) {
+  .post-layout--with-toc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--post-toc-width);
+    column-gap: var(--post-toc-gap);
+    align-items: start;
+  }
+}
+
+.post-toc-desktop {
+  display: none;
+}
+
+@media (min-width: 80rem) {
+  .post-toc-desktop {
+    display: block;
+    justify-self: end;
+    width: min(100%, var(--post-toc-width));
+    min-width: 0;
+    position: sticky;
+    top: 6.5rem;
+    align-self: start;
+    max-height: calc(100svh - 8rem);
+  }
+}
+
+.post-toc-desktop-sticky {
+  overflow-y: auto;
+  padding-inline-end: 0.2rem;
+}
+
+.post-toc-desktop-title {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-title);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  color: color-mix(in srgb, var(--color-accent) 78%, var(--color-foreground));
+  text-transform: uppercase;
+}
+
 .post-toc .toc-list {
   margin: 0;
   padding-inline-start: 1.6rem;
   list-style: disc;
   display: grid;
   gap: 1rem;
+}
+
+.post-toc .toc {
+  position: relative;
+}
+
+.post-toc .toc-cursor {
+  display: none;
 }
 
 .post-toc .toc-item {
@@ -220,8 +336,10 @@ html[data-theme="dark"] {
 }
 
 .post-toc .toc-link {
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: clamp(1.12rem, 1.05rem + 0.15vw, 1.25rem);
+  font-weight: 500;
+  letter-spacing: 0.018em;
   line-height: 1.6;
   color: var(--color-foreground);
   text-decoration-line: underline;
@@ -241,6 +359,73 @@ html[data-theme="dark"] {
 .post-toc .toc-link[aria-current="true"] {
   color: var(--color-accent);
   text-decoration-color: currentColor;
+}
+
+@media (min-width: 80rem) {
+  .post-toc-desktop .toc {
+    position: relative;
+  }
+
+  .post-toc-desktop .toc-cursor {
+    position: absolute;
+    inset-inline-start: -0.18rem;
+    top: 0;
+    display: block;
+    width: 0.18rem;
+    height: 1.4rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-accent) 88%, white 12%);
+    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--color-accent) 12%, transparent);
+    opacity: 0;
+    transform: translateY(0);
+    transition:
+      transform 200ms ease,
+      height 200ms ease,
+      opacity 160ms ease;
+  }
+
+  .post-toc-desktop .toc-list {
+    gap: 0.7rem;
+    padding-inline-start: 1.15rem;
+  }
+
+  .post-toc-desktop .toc-item {
+    min-width: 0;
+  }
+
+  .post-toc-desktop .toc-item::marker {
+    font-size: 1em;
+  }
+
+  .post-toc-desktop .toc-item.depth-3 {
+    margin-inline-start: 1rem;
+  }
+
+  .post-toc-desktop .toc-link {
+    display: block;
+    font-size: 0.98rem;
+    line-height: 1.52;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition:
+      color 180ms ease,
+      text-decoration-color 180ms ease,
+      transform 180ms ease;
+  }
+
+  .post-toc-desktop .toc-item.depth-3 .toc-link {
+    font-size: 0.92rem;
+  }
+
+  .post-toc-desktop .toc-link[aria-current="true"] {
+    transform: translateX(0.2rem);
+  }
+}
+
+.share-caption {
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
 }
 
 /* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */

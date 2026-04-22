@@ -3,14 +3,11 @@ import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Socials from "@/components/Socials.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import Card from "@/components/Card.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
-import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
-import { SOCIALS } from "@/constants";
 import { withBase } from "@/utils/site";
 
 const posts = await getCollection("blog");
@@ -19,10 +16,6 @@ const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const homePath = withBase("/");
-const [brandHandle, ...brandTailParts] = SITE.title.split(" ");
-const brandTail = brandTailParts.join(" ");
-const [brandPrefix, ...brandSuffixParts] = brandHandle.split("_");
-const brandSuffix = brandSuffixParts.join("_");
 ---
 
 <Layout>
@@ -33,73 +26,6 @@ const brandSuffix = brandSuffixParts.join("_");
     data-home-path={homePath}
     class="app-layout"
   >
-    <section id="hero" class="border-b border-border pt-8 pb-10">
-      <div class="max-w-2xl">
-        <div class="flex items-center gap-3">
-          <h1 class="text-4xl font-bold sm:text-6xl">
-            <span class="site-brand site-brand-home" aria-label={SITE.title}>
-              <span class="site-brand-handle">
-                <span class="site-brand-token">{brandPrefix}</span>
-                {
-                  brandSuffix && (
-                    <span class="site-brand-divider" aria-hidden="true">
-                      _
-                    </span>
-                  )
-                }
-                {
-                  brandSuffix && (
-                    <span class="site-brand-token">{brandSuffix}</span>
-                  )
-                }
-              </span>
-              {brandTail && <span class="site-brand-tail">{brandTail}</span>}
-            </span>
-          </h1>
-          <a
-            target="_blank"
-            href={withBase("/rss.xml")}
-            class="translate-y-0.5 text-accent transition hover:opacity-80"
-            aria-label="RSS 订阅"
-            title="RSS 订阅"
-          >
-            <IconRss
-              width={24}
-              height={24}
-              class="stroke-current stroke-3 rtl:-rotate-90"
-            />
-            <span class="sr-only">RSS 订阅</span>
-          </a>
-        </div>
-
-        <p class="mt-6 text-lg leading-8">
-          {SITE.desc}
-        </p>
-        <p class="mt-4 leading-8 opacity-85">
-          这里主要记录课程笔记、学习过程与站点维护实践。博客基于
-          <LinkButton
-            class="underline decoration-dashed underline-offset-4 hover:text-accent"
-            href="https://github.com/satnaing/astro-paper#readme"
-          >
-            AstroPaper
-          </LinkButton>
-          构建，继续沿用模板清爽、专注阅读的首页结构。
-        </p>
-        <p class="mt-4 leading-8 opacity-85">
-          可以先从文章列表开始，也可以直接用搜索快速定位内容。
-        </p>
-
-        {
-          SOCIALS.length > 0 && (
-            <div class="mt-6">
-              <div class="mb-2 text-sm opacity-75">社交链接：</div>
-              <Socials />
-            </div>
-          )
-        }
-      </div>
-    </section>
-
     {
       featuredPosts.length > 0 && (
         <section

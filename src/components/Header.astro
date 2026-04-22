@@ -9,6 +9,12 @@ import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config";
 import { stripBase, withBase } from "@/utils/site";
 
+interface Props {
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props as Props;
+
 const pathname = stripBase(Astro.url.pathname);
 const [brandHandle, ...brandTailParts] = SITE.title.split(" ");
 const brandTail = brandTailParts.join(" ");
@@ -36,7 +42,10 @@ const isActive = (path: string) => {
 </a>
 
 <header
-  class="app-layout flex flex-col items-center justify-between sm:flex-row"
+  class:list={[
+    "mx-auto flex w-full flex-col items-center justify-between px-4 sm:flex-row",
+    wide ? "max-w-post" : "max-w-app",
+  ]}
 >
   <div
     id="top-nav-wrap"

@@ -3,21 +3,32 @@ import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import LinkButton from "./LinkButton.astro";
 import { SITE } from "@/config";
 import { withBase } from "@/utils/site";
+
+interface Props {
+  wide?: boolean;
+}
+
+const { wide = false } = Astro.props as Props;
 ---
 
 {
   SITE.showBackButton && (
-    <div class="app-layout flex items-center justify-start">
-      <LinkButton
-      id="back-button"
-      href={withBase("/")}
-      class="focus-outline -ms-2 mt-8 mb-2 hover:text-foreground/75"
+    <div
+      class:list={[
+        "mx-auto flex w-full items-center justify-start px-4",
+        wide ? "max-w-post" : "max-w-app",
+      ]}
     >
-      <IconChevronLeft class="inline-block size-6 rtl:rotate-180" />
-      <span>Back</span>
-    </LinkButton>
-  </div>
-)
+      <LinkButton
+        id="back-button"
+        href={withBase("/")}
+        class="focus-outline -ms-2 mt-8 mb-2 hover:text-foreground/75"
+      >
+        <IconChevronLeft class="inline-block size-6 rtl:rotate-180" />
+        <span>Back</span>
+      </LinkButton>
+    </div>
+  )
 }
 
 <script>

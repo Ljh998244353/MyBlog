@@ -7,7 +7,6 @@ import Tag from "@/components/Tag.astro";
 import Datetime from "@/components/Datetime.astro";
 import EditPost from "@/components/EditPost.astro";
 import TableOfContents from "@/components/TableOfContents.astro";
-import ShareLinks from "@/components/ShareLinks.astro";
 import BackButton from "@/components/BackButton.astro";
 import BackToTopButton from "@/components/BackToTopButton.astro";
 import { getPath } from "@/utils/getPath";
@@ -88,26 +87,30 @@ const nextPost =
 ---
 
 <Layout {...layoutProps}>
-  <Header />
-  <BackButton />
+  <Header wide={hasToc} />
+  <BackButton wide={hasToc} />
   <main
     id="main-content"
     class:list={[
-      "mx-auto flex w-full max-w-app flex-col px-4 pb-12",
-      { "mt-8": !SITE.showBackButton },
+      "mx-auto flex w-full flex-col px-4 pb-12",
+      {
+        "mt-8": !SITE.showBackButton,
+        "max-w-post": hasToc,
+        "max-w-post-content": !hasToc,
+      },
     ]}
     data-pagefind-body
   >
     <h1
       transition:name={slugifyStr(title)}
-      class="mt-8 inline-block text-3xl font-semibold tracking-tight text-foreground sm:text-5xl"
+      class="post-title mt-8 text-3xl text-foreground sm:text-5xl"
     >
       {title}
     </h1>
 
     <div
       data-pagefind-ignore
-      class="mt-2 flex flex-wrap items-center gap-2 text-sm text-foreground/80"
+      class="post-meta mt-3 flex flex-wrap items-center gap-2 text-sm text-foreground/80"
     >
       <Datetime {pubDatetime} {modDatetime} {timezone} />
       <span
@@ -121,7 +124,7 @@ const nextPost =
 
     {
       hasToc && (
-        <section class="post-toc mt-10" data-pagefind-ignore>
+        <section class="post-toc post-toc-mobile mt-10 xl:hidden" data-pagefind-ignore>
           <h2 id="table-of-contents" class="post-toc-title">
             Table of contents
           </h2>
@@ -135,12 +138,28 @@ const nextPost =
       )
     }
 
-    <article
-      id="article"
-      class="app-prose mt-10 w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
-    >
-      <Content />
-    </article>
+    <div class:list={["post-layout mt-10", { "post-layout--with-toc": hasToc }]}>
+      <article
+        id="article"
+        class="app-prose w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
+      >
+        <Content />
+      </article>
+
+      {
+        hasToc && (
+          <aside
+            class="post-toc post-toc-desktop hidden xl:block"
+            data-pagefind-ignore
+          >
+            <div class="post-toc-desktop-sticky">
+              <p class="post-toc-desktop-title">Table of contents</p>
+              <TableOfContents headings={tocHeadings} />
+            </div>
+          </aside>
+        )
+      }
+    </div>
 
     <hr class="my-8 border-dashed" />
 
@@ -152,13 +171,7 @@ const nextPost =
       )
     }
 
-    <div
-      data-pagefind-ignore
-      class="flex flex-col-reverse items-start justify-between gap-6 sm:flex-row sm:items-center"
-    >
-      <BackToTopButton />
-      <ShareLinks />
-    </div>
+    <BackToTopButton />
 
     <hr class="my-6 border-dashed" />
 
@@ -270,30 +283,37 @@ const nextPost =
     const codeBlocks = Array.from(document.querySelectorAll("pre"));
 
     for (const codeBlock of codeBlocks) {
-      if (codeBlock.querySelector(".copy-code")) continue;
+      if (codeBlock.parentElement?.classList.contains("code-block-shell")) {
+        continue;
+      }
+
+      codeBlock.querySelector(".copy-code")?.remove();
 
       const wrapper = document.createElement("div");
-      wrapper.style.position = "relative";
+      wrapper.className = "code-block-shell";
+      const fileLabel = codeBlock.querySelector(".code-block-file-label");
+      const fileNameOffset = getComputedStyle(codeBlock)
+        .getPropertyValue("--file-name-offset")
+        .trim();
 
-      // Check if --file-name-offset custom property exists
-      const computedStyle = getComputedStyle(codeBlock);
-      const hasFileNameOffset =
-        computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
-
-      // Determine the top positioning class
-      const topClass = hasFileNameOffset
-        ? "top-(--file-name-offset)"
-        : "-top-3";
+      if (fileNameOffset) {
+        wrapper.style.setProperty("--file-name-offset", fileNameOffset);
+      }
 
       const copyButton = document.createElement("button");
-      copyButton.className = `copy-code absolute end-3 ${topClass} rounded bg-muted border border-muted px-2 py-1 text-xs leading-4 text-foreground font-medium`;
+      copyButton.type = "button";
+      copyButton.className = "copy-code";
+      copyButton.setAttribute("aria-label", copyButtonLabel);
       copyButton.innerHTML = copyButtonLabel;
       codeBlock.setAttribute("tabindex", "0");
-      codeBlock.appendChild(copyButton);
 
       // wrap codebock with relative parent element
       codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
       wrapper.appendChild(codeBlock);
+      if (fileLabel) {
+        wrapper.appendChild(fileLabel);
+      }
+      wrapper.appendChild(copyButton);
 
       copyButton.addEventListener("click", async () => {
         await copyCode(codeBlock, copyButton);
@@ -308,13 +328,43 @@ const nextPost =
 
       // visual feedback that task is completed
       button.innerText = "Copied";
+      button.setAttribute("aria-label", "Copied");
 
       setTimeout(() => {
         button.innerText = copyButtonLabel;
+        button.setAttribute("aria-label", copyButtonLabel);
       }, 700);
     }
   }
   attachCopyButtons();
+
+  function syncDesktopTocCursor(activeLink) {
+    const desktopToc = document.querySelector(".post-toc-desktop [data-toc-nav]");
+    const desktopTocScroller = document.querySelector(".post-toc-desktop-sticky");
+    const cursor = desktopToc?.querySelector("[data-toc-cursor]");
+
+    if (!desktopToc || !desktopTocScroller || !cursor || !activeLink) {
+      if (cursor) {
+        cursor.style.opacity = "0";
+      }
+      return;
+    }
+
+    const tocRect = desktopToc.getBoundingClientRect();
+    const linkRect = activeLink.getBoundingClientRect();
+    const cursorTop = Math.max(0, linkRect.top - tocRect.top + 0.15 * linkRect.height);
+    const cursorHeight = Math.max(18, linkRect.height * 0.7);
+    const activeId = activeLink.getAttribute("data-target-id");
+
+    cursor.style.height = `${cursorHeight}px`;
+    cursor.style.transform = `translateY(${cursorTop}px)`;
+    cursor.style.opacity = "1";
+
+    if (window.__postDetailActiveTocId !== activeId) {
+      activeLink.scrollIntoView({ block: "nearest", inline: "nearest" });
+      window.__postDetailActiveTocId = activeId;
+    }
+  }
 
   function syncActiveToc() {
     const tocLinks = Array.from(document.querySelectorAll("[data-toc-link]"));
@@ -343,6 +393,14 @@ const nextPost =
       const isActive = link.getAttribute("data-target-id") === activeId;
       link.setAttribute("aria-current", isActive ? "true" : "false");
     }
+
+    const activeDesktopLink = tocLinks.find(
+      link =>
+        link.getAttribute("data-target-id") === activeId &&
+        link.closest(".post-toc-desktop")
+    );
+
+    syncDesktopTocCursor(activeDesktopLink);
   }
 
   function syncReadingState() {

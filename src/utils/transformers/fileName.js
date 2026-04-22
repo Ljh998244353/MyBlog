@@ -40,7 +40,7 @@ export const transformerFileName = ({
     // Add additional margin to code block
     this.addClassToHast(
       node,
-      `mt-8 ${style === "v1" ? "rounded-tl-none" : ""}`
+      `code-block-with-file mt-8 ${style === "v1" ? "rounded-tl-none" : ""}`
     );
 
     // Add file name to code block
@@ -49,13 +49,13 @@ export const transformerFileName = ({
       tagName: "span",
       properties: {
         class: [
-          "absolute py-1 text-foreground text-xs font-medium leading-4",
+          "code-block-file-label",
           hideDot
-            ? "px-2"
-            : "pl-4 pr-2 before:inline-block before:size-1 before:bg-green-500 before:rounded-full before:absolute before:top-[45%] before:left-2",
+            ? "code-block-file-label--plain"
+            : "code-block-file-label--dot",
           style === "v1"
-            ? "left-0 -top-6 rounded-t-md border border-b-0 bg-muted/50"
-            : "left-2 top-(--file-name-offset) border rounded-md bg-background",
+            ? "code-block-file-label--tab"
+            : "code-block-file-label--badge",
         ],
       },
       children: [
