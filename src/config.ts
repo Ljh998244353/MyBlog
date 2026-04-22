@@ -5,7 +5,9 @@ const normalizeBasePath = (value: string | undefined) => {
     return "";
   }
 
-  return value.startsWith("/") ? value.replace(/\/$/, "") : `/${value.replace(/\/$/, "")}`;
+  return value.startsWith("/")
+    ? value.replace(/\/$/, "")
+    : `/${value.replace(/\/$/, "")}`;
 };
 
 export const PRODUCTION_BASE_PATH = normalizeBasePath(
@@ -22,7 +24,8 @@ export const SITE = {
   profile: "https://github.com/ljh998244353",
   desc: "liu_jh 的 Blog",
   title: "liu_jh の Blog",
-  ogImage: "head.jpg",
+  ogImage: "alice2.png",
+  homeHeroImage: "alice2.png",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,

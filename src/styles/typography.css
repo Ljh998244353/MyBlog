@@ -2,7 +2,7 @@
 
 @layer base {
   .app-prose {
-    @apply prose prose-headings:mb-3 prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-li:text-foreground prose-code:text-foreground prose-figcaption:text-foreground prose-figcaption:opacity-70 prose-img:mx-auto prose-img:rounded-md prose-hr:border-border prose-blockquote:border-s-accent prose-blockquote:bg-muted/50 prose-blockquote:py-1 prose-blockquote:pe-1 prose-blockquote:opacity-80 prose-strong:font-semibold prose-code:rounded prose-code:bg-muted prose-code:p-1 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-(--shiki-light-bg) prose-pre:text-(--shiki-light) prose-pre:before:content-none prose-pre:after:content-none prose-ol:text-foreground prose-ul:text-foreground prose-table:text-foreground prose-th:border prose-th:border-border prose-th:p-1 prose-td:border prose-td:border-border prose-td:p-1 prose-a:break-words prose-code:break-words;
+    @apply prose prose-headings:mb-3 prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-a:text-foreground prose-li:text-foreground prose-code:text-foreground prose-figcaption:text-foreground prose-figcaption:opacity-70 prose-img:mx-auto prose-img:rounded-md prose-hr:border-border prose-blockquote:border-s-accent prose-blockquote:border-s-[3px] prose-blockquote:py-1 prose-blockquote:ps-5 prose-blockquote:pe-1 prose-blockquote:opacity-80 prose-blockquote:not-italic prose-strong:font-semibold prose-code:rounded prose-code:bg-muted prose-code:p-1 prose-code:before:content-none prose-code:after:content-none prose-pre:bg-(--shiki-light-bg) prose-pre:text-(--shiki-light) prose-pre:before:content-none prose-pre:after:content-none prose-ol:text-foreground prose-ul:text-foreground prose-table:text-foreground prose-th:border prose-th:border-border prose-th:p-1 prose-td:border prose-td:border-border prose-td:p-1 prose-a:break-words prose-code:break-words;
     max-width: min(100%, calc(65ch + 2ic));
     font-size: clamp(1.04rem, 1rem + 0.16vw, 1.12rem);
   }
@@ -43,10 +43,6 @@
     letter-spacing: 0.01em;
   }
 
-  .app-prose > p:first-of-type {
-    font-size: clamp(1.12rem, 1.06rem + 0.22vw, 1.24rem);
-    line-height: 1.88;
-  }
 
   .app-prose code,
   .app-prose pre,
@@ -72,19 +68,19 @@
   }
 
   .app-prose pre {
-    @apply rounded-xl;
+    @apply rounded-lg;
     margin-block: 2rem;
     overflow-x: auto;
     overflow-y: hidden;
     border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
-    padding: 2.65rem 1.15rem 1rem;
-    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+    padding: 1.2rem 1.15rem 1rem;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     scrollbar-gutter: stable;
     -webkit-overflow-scrolling: touch;
   }
 
   html[data-theme="dark"] .app-prose pre {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
   }
 
   .app-prose pre code {
@@ -96,9 +92,13 @@
     font-family: var(--font-code);
     font-size: clamp(0.92rem, 0.89rem + 0.1vw, 0.98rem);
     font-weight: 430;
-    line-height: 1.56;
+    line-height: 1.7;
     letter-spacing: 0;
     word-spacing: normal;
+    font-variant-ligatures: contextual;
+    font-feature-settings: "calt" 1, "liga" 1;
+    font-optical-sizing: none;
+    -webkit-font-smoothing: subpixel-antialiased;
   }
 
   .app-prose blockquote p {
@@ -119,7 +119,7 @@
     justify-content: center;
     min-width: 3.5rem;
     border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-    border-radius: 999px;
+    border-radius: 0.375rem;
     background: color-mix(in srgb, var(--background) 88%, transparent);
     padding: 0.48rem 0.72rem;
     font-family: var(--font-ui);
@@ -128,17 +128,19 @@
     line-height: 1;
     letter-spacing: 0.035em;
     color: color-mix(in srgb, var(--foreground) 88%, var(--accent));
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    opacity: 0;
     transition:
-      transform 180ms ease,
+      opacity 180ms ease,
       color 180ms ease,
       border-color 180ms ease,
       background-color 180ms ease;
   }
 
+  .code-block-shell:hover .copy-code {
+    opacity: 1;
+  }
+
   .code-block-shell .copy-code:hover {
-    transform: translateY(-1px);
     color: var(--accent);
     border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
     background: color-mix(in srgb, var(--background) 94%, var(--muted));
@@ -159,7 +161,7 @@
     gap: 0.5rem;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
-    border-radius: 999px;
+    border-radius: 0.375rem;
     background: color-mix(in srgb, var(--background) 90%, transparent);
     padding: 0.5rem 0.8rem;
     font-family: var(--font-ui);
@@ -170,8 +172,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     color: color-mix(in srgb, var(--foreground) 88%, var(--accent));
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
   }
 
   .code-block-file-label--badge {
@@ -246,6 +246,7 @@
   .astro-code {
     @apply flex border bg-(--shiki-light-bg) text-(--shiki-light) outline-border [&_span]:text-(--shiki-light);
     align-items: stretch;
+    counter-reset: line;
   }
 
   html[data-theme="dark"] .astro-code {
@@ -266,6 +267,18 @@
       line-height: inherit;
       padding-inline: 0.42rem;
       border-radius: 0.45rem;
+    }
+
+    .line::before {
+      counter-increment: line;
+      content: counter(line);
+      display: inline-block;
+      width: 2ch;
+      margin-right: 1.2em;
+      text-align: right;
+      color: color-mix(in srgb, var(--foreground) 28%, transparent);
+      font-size: 0.85em;
+      user-select: none;
     }
 
     .line.diff.add {

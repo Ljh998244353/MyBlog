@@ -57,10 +57,42 @@ scripts/         发布前脚本
 
 ## 写作说明
 
-- 新文章放在 `src/data/blog/`
-- frontmatter 至少包含 `title`、`description`、`pubDatetime`、`tags`、`draft`
-- 如需按目录组织文章，路由会自动映射到 `/posts/...`
+新文章直接放在 `src/data/blog/` 下，支持按子目录分组，路由会自动映射到 `/posts/...`。
+
+frontmatter 最少需要以下字段：
+
+```md
+---
+title: 标题
+description: 摘要
+pubDatetime: 2026-04-22T09:00:00+08:00
+tags:
+  - 示例标签
+draft: false
+---
+```
+
+可选字段：`featured: true`（置顶到首页精选区）。
+
+## 常碰到的目录
+
+- `src/data/blog/`：所有文章和笔记
+- `src/config.ts`：站点标题、描述、分页数量、编辑链接、基础 URL
+- `src/pages/`：路由页面（首页、搜索、标签、归档、RSS、robots.txt）
+- `src/components/`：公共组件（头部、底部、文章卡片、分页）
+- `src/layouts/`：页面与文章布局
+- `src/styles/`：全局样式与排版样式
+
+## 发布流程
+
+1. 本地执行 `npm run publish`（依次跑 `check` 和 `build`，通过后再推）
+2. 推送到 `main`
+
+推送后 GitHub Actions 自动触发：
+
+- `.github/workflows/deploy.yml`：安装依赖 → `npm run build` → 上传 `dist/` → 部署到 GitHub Pages
+- `.github/workflows/ci.yml`：代码规范与构建检查
 
 ## 说明
 
-当前仓库仍在持续收口 AstroPaper 迁移后的个性化配置与内容整理，站点会以小步迭代的方式继续完善。
+当前仓库仍在持续收口 AstroPaper 迁移后的个性化配置与内容整理，站点会以小步迭代的方式继续完善。优先做"小而确定"的增量修改，而不是大范围推倒重来。

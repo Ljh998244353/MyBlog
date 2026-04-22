@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Newsreader:opsz,wght@6..72,400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap");
 @import "tailwindcss";
 @import "./typography.css";
 
@@ -27,21 +27,20 @@ html[data-theme="light"] {
     "Microsoft YaHei UI", "Segoe UI", ui-sans-serif, sans-serif;
   --font-title:
     "Cormorant Garamond", "Newsreader", "Iowan Old Style", "Baskerville",
-    "Palatino Linotype", "Times New Roman",
-    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
-    ui-serif, serif;
+    "Palatino Linotype", "Times New Roman", "Noto Serif CJK SC",
+    "Source Han Serif SC", "Songti SC", "STSong", ui-serif, serif;
   --font-body:
     "Newsreader", "Charter", "Iowan Old Style", "Georgia", "Palatino Linotype",
-    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
-    ui-serif, serif;
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong", ui-serif,
+    serif;
   --font-mono:
-    "Maple Mono", "Sarasa Mono SC", "Noto Sans Mono CJK SC",
-    "JetBrains Mono", "IBM Plex Mono", "Cascadia Mono", "SFMono-Regular",
-    "Consolas", "PingFang SC", monospace;
+    "Maple Mono", "Sarasa Mono SC", "Noto Sans Mono CJK SC", "JetBrains Mono",
+    "IBM Plex Mono", "Cascadia Mono", "SFMono-Regular", "Consolas",
+    "PingFang SC", monospace;
   --font-code:
-    "Sarasa Mono SC", "Noto Sans Mono CJK SC", "Cascadia Mono",
-    "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", "Consolas",
-    "Maple Mono", monospace;
+    "Maple Mono", "JetBrains Mono", "Cascadia Code",
+    "Sarasa Mono SC", "Noto Sans Mono CJK SC",
+    "IBM Plex Mono", "SFMono-Regular", "Consolas", monospace;
 }
 
 html[data-theme="dark"] {
@@ -74,8 +73,16 @@ html[data-theme="dark"] {
   body {
     @apply flex min-h-svh flex-col bg-background font-sans text-foreground selection:bg-accent/75 selection:text-background;
     background-image:
-      radial-gradient(circle at top right, var(--page-glow-primary), transparent 24rem),
-      radial-gradient(circle at bottom left, var(--page-glow-secondary), transparent 28rem);
+      radial-gradient(
+        circle at top right,
+        var(--page-glow-primary),
+        transparent 24rem
+      ),
+      radial-gradient(
+        circle at bottom left,
+        var(--page-glow-secondary),
+        transparent 28rem
+      );
     background-attachment: fixed;
     font-family: var(--font-ui);
     font-weight: 450;
@@ -187,6 +194,183 @@ html[data-theme="dark"] {
 
 .site-brand-home .site-brand-handle {
   letter-spacing: 0.025em;
+}
+
+.home-hero {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: clip;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--accent) 28%, #04101d),
+    color-mix(in srgb, var(--foreground) 20%, #020617)
+  );
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: -6%;
+  z-index: -2;
+  background-image: var(--home-hero-image, none);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(1.04) translateY(calc(var(--hero-scroll, 0) * 3%));
+  transform-origin: center;
+  filter: saturate(0.94) contrast(1.05);
+  will-change: transform;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(
+      circle at 50% 28%,
+      rgba(255, 255, 255, 0.18),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(5, 10, 20, 0.16) 0%,
+      rgba(5, 10, 20, 0.42) 44%,
+      rgba(5, 10, 20, 0.8) 100%
+    );
+}
+
+.home-hero-inner {
+  position: relative;
+  width: min(90vw, 72rem);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2.25rem, 7vw, 5rem) 1.5rem;
+  text-align: center;
+  color: #f8fbff;
+  opacity: calc(1 - var(--hero-scroll, 0));
+  transform: translateY(calc(var(--hero-scroll, 0) * -4rem))
+    scale(calc(1 - var(--hero-scroll, 0) * 0.06));
+  will-change: opacity, transform;
+}
+
+.home-hero-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.08em 0.28ch;
+  margin: 0;
+  font-family:
+    "Cormorant Garamond", "Baskerville", "Palatino Linotype",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
+    ui-serif, serif;
+  font-feature-settings:
+    "liga" 1,
+    "dlig" 1;
+  text-wrap: balance;
+  text-shadow: 0 0.08em 0.32em rgba(3, 7, 18, 0.18);
+}
+
+.home-hero-handle {
+  font-family: "JetBrains Mono", "SF Mono", "Fira Code", var(--font-mono);
+  font-size: clamp(3.4rem, 10vw, 7.4rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 0.88;
+}
+
+.home-hero-tail {
+  font-family:
+    "Playfair Display", "Newsreader", "Iowan Old Style", "Baskerville",
+    "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "STSong",
+    ui-serif, serif;
+  font-size: clamp(2.4rem, 6.8vw, 5.2rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: 0.96;
+  opacity: 0.92;
+}
+
+.home-hero-hint {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: clamp(1.5rem, 3.4vw, 2.8rem);
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(0.78rem, 0.76rem + 0.18vw, 0.94rem);
+  font-weight: 560;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(248, 251, 255, 0.82);
+  opacity: calc(0.9 - var(--hero-scroll, 0) * 2.5);
+}
+
+.home-hero-hint-track {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.72rem;
+  animation: home-hero-hint-float 3.6s cubic-bezier(0.37, 0, 0.63, 1) infinite;
+}
+
+.home-shell {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+  background: var(--background);
+}
+
+@keyframes home-hero-hint-float {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(0.32rem);
+    opacity: 0.6;
+  }
+}
+
+@media (max-width: 40rem) {
+  .home-hero-title {
+    gap: 0.14em 0.22ch;
+  }
+
+  .home-hero-handle {
+    font-size: clamp(2.8rem, 9vw, 4rem);
+    letter-spacing: 0.01em;
+  }
+
+  .home-hero-hint {
+    letter-spacing: 0.18em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-hint-track {
+    transition: none;
+    animation: none;
+  }
+
+  .home-hero-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .home-hero::before {
+    transform: scale(1.04) !important;
+  }
 }
 
 .page-title {
@@ -375,7 +559,8 @@ html[data-theme="dark"] {
     height: 1.4rem;
     border-radius: 999px;
     background: color-mix(in srgb, var(--color-accent) 88%, white 12%);
-    box-shadow: 0 0 0 0.18rem color-mix(in srgb, var(--color-accent) 12%, transparent);
+    box-shadow: 0 0 0 0.18rem
+      color-mix(in srgb, var(--color-accent) 12%, transparent);
     opacity: 0;
     transform: translateY(0);
     transition:
