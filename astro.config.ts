@@ -5,6 +5,10 @@ import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import icon from "astro-icon";
 import rehypeMermaid from "rehype-mermaid";
+import rehypeComponents from "rehype-components";
+import rehypeKatex from "rehype-katex";
+import remarkDirective from "remark-directive";
+import remarkMath from "remark-math";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -15,8 +19,18 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { BASE_PATH, SITE } from "./src/config";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import {
+  AdmonitionComponent,
+  parseDirectiveNode,
+  QuoteComponent,
+  remarkCombined,
+} from "./src/plugins/markdown-specials.mjs";
 
 const siteUrl = new URL(SITE.website);
+type AdmonitionType = "note" | "tip" | "important" | "warning" | "caution";
+const createAdmonitionComponent =
+  (type: AdmonitionType) => (properties: unknown, children: unknown[]) =>
+    AdmonitionComponent(properties, children, type);
 
 // https://astro.build/config
 export default defineConfig({
@@ -53,17 +67,35 @@ export default defineConfig({
       excludeLangs: ["mermaid", "math"],
     },
     remarkPlugins: [
+      remarkMath,
       remarkReadingTime,
       remarkToc,
       [remarkCollapse, { test: "Table of contents" }],
+      remarkDirective,
+      parseDirectiveNode,
+      remarkCombined,
     ],
     rehypePlugins: [
+      rehypeKatex,
       [
         rehypeMermaid,
         {
           strategy: "img-svg",
           colorScheme: "light",
           dark: true,
+        },
+      ],
+      [
+        rehypeComponents,
+        {
+          components: {
+            quote: QuoteComponent,
+            note: createAdmonitionComponent("note"),
+            tip: createAdmonitionComponent("tip"),
+            important: createAdmonitionComponent("important"),
+            warning: createAdmonitionComponent("warning"),
+            caution: createAdmonitionComponent("caution"),
+          },
         },
       ],
     ],
