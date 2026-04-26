@@ -15,8 +15,7 @@ const publishRemote = process.env.PUBLISH_REMOTE ?? "origin";
 const distDir = "dist";
 
 const steps = [
-  { name: "Validate content and routes", command: "npm", args: ["run", "check"] },
-  { name: "Build static site", command: "npm", args: ["run", "build"] },
+  { name: "Build and validate static site", command: "npm", args: ["run", "build"] },
 ];
 
 await assertSourceBranch();

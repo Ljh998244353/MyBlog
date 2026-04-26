@@ -82,7 +82,7 @@ export default defineConfig({
         {
           strategy: "img-svg",
           colorScheme: "light",
-          dark: true,
+          dark: false,
         },
       ],
       [
