@@ -2,7 +2,9 @@
 import type { CollectionEntry } from "astro:content";
 import { slugifyStr } from "@/utils/slugify";
 import { getPath } from "@/utils/getPath";
+import { withBase } from "@/utils/site";
 import Datetime from "./Datetime.astro";
+import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 
 type Props = {
   variant?: "h2" | "h3";
@@ -10,22 +12,74 @@ type Props = {
 
 const { variant: Heading = "h2", id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const {
+  title,
+  description,
+  ogImage,
+  featured,
+  tags = [],
+  ...datetimeProps
+} = data;
+
+const postPath = getPath(id, filePath);
+let cardImage: string | undefined;
+
+if (typeof ogImage === "string") {
+  cardImage = /^https?:\/\//.test(ogImage)
+    ? ogImage
+    : withBase(`/${ogImage.replace(/^\/+/, "")}`);
+} else if (ogImage?.src) {
+  cardImage = ogImage.src;
+}
+
+const visibleTags = tags.slice(0, 4);
 ---
 
-<li class="my-6">
-  <a
-    href={getPath(id, filePath)}
-    class:list={[
-      "inline-block text-lg font-medium text-accent",
-      "decoration-dashed underline-offset-4 hover:underline",
-      "focus-visible:no-underline focus-visible:underline-offset-0",
-    ]}
-  >
-    <Heading style={{ viewTransitionName: slugifyStr(title) }}>
-      {title}
-    </Heading>
-  </a>
-  <Datetime {...props} />
-  <p>{description}</p>
+<li class="post-list-item post-card">
+  {
+    cardImage && (
+      <a href={postPath} class="post-card-cover" aria-label={title}>
+        <img class="post-card-image" src={cardImage} alt="" loading="lazy" />
+      </a>
+    )
+  }
+
+  <div class="post-card-content">
+    <a
+      href={postPath}
+      class="post-card-title-link focus-visible:no-underline"
+    >
+      <Heading
+        class="post-list-heading"
+        style={{ viewTransitionName: slugifyStr(title) }}
+      >
+        <span>{title}</span>
+        <IconChevronRight class="post-card-arrow rtl:rotate-180" />
+      </Heading>
+    </a>
+
+    <p class="post-list-desc">{description}</p>
+
+    <div class="post-card-meta">
+      <Datetime class="post-card-date" {...datetimeProps} />
+      {featured && <span class="post-card-badge">推荐</span>}
+    </div>
+
+    {
+      visibleTags.length > 0 && (
+        <ul class="post-card-tags" aria-label={`${title} 的标签`}>
+          {visibleTags.map(tag => {
+            const tagSlug = slugifyStr(tag);
+            return (
+              <li>
+                <a class="post-card-tag" href={withBase(`/tags/${tagSlug}/`)}>
+                  #{tag}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      )
+    }
+  </div>
 </li>

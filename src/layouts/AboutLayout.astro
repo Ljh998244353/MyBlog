@@ -2,7 +2,6 @@
 import type { MarkdownLayoutProps } from "astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Breadcrumb from "@/components/Breadcrumb.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import IconGitHub from "@/assets/icons/IconGitHub.svg";
 import IconMail from "@/assets/icons/IconMail.svg";
@@ -16,10 +15,12 @@ const { frontmatter } = Astro.props;
 
 <Layout title={`${frontmatter.title} | ${SITE.title}`}>
   <Header />
-  <Breadcrumb />
-  <main id="main-content" class="app-layout">
+  <main id="main-content" class="app-layout page-main">
+    <section class="page-cover">
+      <p class="page-eyebrow">About</p>
+      <h1 class="page-title">{frontmatter.title}</h1>
+    </section>
     <section id="about" class="app-prose mb-28 max-w-app prose-img:border-0">
-      <h1 class="text-2xl tracking-wider sm:text-3xl">{frontmatter.title}</h1>
       <slot />
       <h2>联系我</h2>
       <div class="not-prose mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap">

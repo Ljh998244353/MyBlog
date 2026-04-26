@@ -1,3 +1,5 @@
+import type { LicenseConfig, ProfileConfig, SiteConfig } from "./types/config";
+
 const productionSiteUrl = new URL("https://ljh998244353.github.io/MyBlog/");
 
 const normalizeBasePath = (value: string | undefined) => {
@@ -27,8 +29,8 @@ export const SITE = {
   ogImage: "alice2.png",
   homeHeroImage: "alice2.png",
   lightAndDarkMode: true,
-  postPerIndex: 4,
-  postPerPage: 4,
+  postPerIndex: 3,
+  postPerPage: 6,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: true,
   showBackButton: true, // show back button in post detail
@@ -42,3 +44,34 @@ export const SITE = {
   lang: "zh-CN", // html lang code. Set this empty and default will be "en"
   timezone: "Asia/Shanghai", // Default global timezone (IANA format) https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 } as const;
+
+export const siteConfig: SiteConfig = {
+  title: SITE.title,
+  subTitle: SITE.desc,
+  favicon: "/favicon.svg",
+  pageSize: SITE.postPerPage,
+  toc: {
+    enable: true,
+    depth: 3,
+  },
+  blogNavi: {
+    enable: true,
+  },
+  theme: {
+    AOS: true,
+  },
+};
+
+export const profileConfig: ProfileConfig = {
+  avatar: "/alice2.png",
+  name: SITE.author,
+  description: SITE.desc,
+  indexPage: SITE.profile,
+  startYear: 2026,
+};
+
+export const licenseConfig: LicenseConfig = {
+  enable: true,
+  name: "CC BY-NC-SA 4.0",
+  url: "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+};

@@ -2,7 +2,7 @@
 title: CH1-信息安全概论
 description: SWJTU-网络空间安全技术-CH1
 pubDatetime: 2026-04-21T00:00:00+08:00
-modDatetime:
+modDatetime: 2026-04-26T17:23:59+08:00
 tags:
   - SWJTU
   - 网络空间安全
@@ -48,7 +48,7 @@ draft: false
 
 #### 信息安全
 
-信息本身的**机密性（Confidentiality）**、**完整性（Integrity）**和**可用性（Availability）**的保持，即防止未经授权使用信息、防止对信息的非法修改和破坏、确保及时可靠地使用信息。
+信息本身的**机密性（Confidentiality**、**完整性（Integrity** 和 **可用性（Availability**的保持，即防止未经授权使用信息、防止对信息的非法修改和破坏、确保及时可靠地使用信息。
 
 ### 如何保障信息安全
 

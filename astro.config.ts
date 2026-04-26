@@ -1,6 +1,9 @@
 import { defineConfig, envField } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
+import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+import svelte from "@astrojs/svelte";
+import icon from "astro-icon";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -10,6 +13,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import { BASE_PATH, SITE } from "./src/config";
+import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 const siteUrl = new URL(SITE.website);
 
@@ -17,13 +21,37 @@ const siteUrl = new URL(SITE.website);
 export default defineConfig({
   site: siteUrl.origin,
   base: BASE_PATH || undefined,
+  i18n: {
+    locales: ["zh-cn"],
+    defaultLocale: "zh-cn",
+    routing: {
+      prefixDefaultLocale: false,
+      redirectToDefaultLocale: false,
+    },
+  },
   integrations: [
+    mdx(),
+    icon({
+      include: {
+        "fa6-brands": ["*"],
+        "fa6-solid": ["*"],
+        "simple-icons": ["*"],
+        "vscode-icons": ["*"],
+        "material-symbols": ["*"],
+        fluent: ["*"],
+      },
+    }),
+    svelte(),
     sitemap({
       filter: page => SITE.showArchives || !page.endsWith("/archives"),
     }),
   ],
   markdown: {
-    remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+    remarkPlugins: [
+      remarkReadingTime,
+      remarkToc,
+      [remarkCollapse, { test: "Table of contents" }],
+    ],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "night-owl" },

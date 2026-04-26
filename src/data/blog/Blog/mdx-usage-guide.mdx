@@ -1,0 +1,99 @@
+---
+title: MDX 写作常用与推荐方法
+description: 介绍当前博客如何使用 MDX、适合使用 MDX 的场景，以及推荐的组件化写作方式。
+pubDatetime: 2026-04-26T15:12:00+08:00
+modDatetime:
+tags:
+  - 博客
+  - MDX
+  - 使用说明
+  - 精选
+draft: false
+---
+
+import MdxTip from "@/components/mdx/MdxTip.astro";
+
+这篇文章用 MDX 编写，用来说明当前博客的 MDX 支持方式。普通文章继续使用 Markdown 就足够；当文章需要插入自定义组件、交互示例或结构化展示时，再使用 MDX。
+
+<MdxTip title="推荐原则">
+  优先写 Markdown。只有在纯 Markdown 表达不够清晰时，再把文章改成 MDX。
+</MdxTip>
+
+## 文件位置
+
+MDX 文章和普通 Markdown 文章放在同一个内容目录：
+
+```text
+src/data/blog/Blog/mdx-usage-guide.mdx
+```
+
+文件扩展名使用 `.mdx`。frontmatter 仍然沿用当前博客文章字段：
+
+```yaml
+---
+title: MDX 写作常用与推荐方法
+description: 文章摘要
+pubDatetime: 2026-04-26T17:23:59+08:00
+modDatetime:
+tags:
+  - 博客
+  - MDX
+  - 使用说明
+draft: false
+---
+```
+
+`pubDatetime` 可以先留空；运行 `npm run check`、`npm run build` 或提交前，会自动补成当前时间。
+
+## 常用写法
+
+MDX 首先是 Markdown，所以标题、列表、引用、代码块等基础语法都可以继续使用。
+
+```md
+## 二级标题
+
+- 列表项
+- 另一项
+
+> 引用内容
+```
+
+MDX 额外允许在正文里导入并使用组件：
+
+```mdx
+import MdxTip from "@/components/mdx/MdxTip.astro";
+
+<MdxTip title="提示">这里可以放 Markdown 内容，也可以放更复杂的结构。</MdxTip>
+```
+
+## 推荐使用场景
+
+适合使用 MDX 的内容：
+
+- 需要复用提示块、定义块、实验结果块等固定结构。
+- 需要插入 Astro、Svelte 或其他前端组件。
+- 需要把一组内容封装成可维护的展示组件。
+
+不建议使用 MDX 的内容：
+
+- 只有标题、段落、列表、图片和代码块的普通笔记。
+- 大量一次性 JSX 标记堆在文章里，反而降低可读性。
+- 把文章当页面组件写，导致内容和样式强耦合。
+
+## 组件组织建议
+
+推荐把 MDX 专用组件放在：
+
+```text
+src/components/mdx/
+```
+
+组件命名保持明确，例如 `MdxTip.astro`、`Definition.astro`、`ExampleResult.astro`。文章中只导入需要的组件，避免在正文里写大段样式。
+
+<MdxTip title="标签与首页推荐">
+  MDX 文章同样支持多标签归档；在 tags 中加入 精选 后，会显示在首页的“推荐阅读”。
+</MdxTip>
+
+## 维护建议
+
+如果只是记录课程笔记或普通技术文章，继续使用 `.md`。如果文章确实需要组件化表达，再使用 `.mdx`。这样可以让内容长期保持简单，也能在需要时获得 MDX 的扩展能力。

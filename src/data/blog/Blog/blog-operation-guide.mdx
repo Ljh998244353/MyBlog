@@ -1,0 +1,653 @@
+---
+title: 博客架构、发布流程与 MDX 上手手册
+description: 详细介绍当前 Astro + GitHub Pages 博客的免费架构、日常发布流程、MDX 写作、自动封面图库和维护注意事项。
+pubDatetime: 2026-04-26T16:33:08+08:00
+modDatetime: 2026-04-26T17:08:29+08:00
+tags:
+  - 博客
+  - 使用说明
+  - MDX
+  - 封面
+  - 精选
+draft: false
+---
+
+import MdxTip from "@/components/mdx/MdxTip.astro";
+
+这篇文章是当前博客的完整使用手册。它记录站点架构、免费部署边界、日常写作和发布流程、MDX 上手方法、自动封面图库规则，以及后续维护时需要注意的事项。
+
+<MdxTip title="先看结论">
+  当前博客是静态站点：文章写在仓库里，Astro 构建成静态文件，GitHub Actions
+  部署到 GitHub Pages。公共仓库、标准 runner、GitHub Pages
+  和本地构建工具本身不会产生日常托管费用。
+</MdxTip>
+
+## 当前博客是什么架构
+
+这个博客不是传统的服务器博客。它没有数据库，没有后台管理系统，也没有需要长期运行的服务器。整体链路是：
+
+```text
+Markdown / MDX 文章
+        ↓
+Astro 内容集合读取 src/data/blog/
+        ↓
+Astro 构建页面、标签、归档、RSS、站点地图
+        ↓
+Pagefind 生成浏览器端搜索索引
+        ↓
+GitHub Actions 上传 dist/
+        ↓
+GitHub Pages 托管静态站点
+```
+
+这种架构的核心好处是稳定、简单、成本低。访问者打开网页时，GitHub Pages 只需要返回已经构建好的 HTML、CSS、JavaScript、图片和搜索索引，不需要临时查询数据库，也不需要服务器端渲染。
+
+## 目录分工
+
+当前仓库中最常用的目录如下：
+
+```text
+src/data/blog/                 博客文章，支持 .md 和 .mdx
+src/components/                共享组件
+src/components/mdx/            MDX 文章中使用的专用组件
+src/pages/[...locale]/         Momo 风格页面路由
+src/layouts/                   页面布局和文章布局
+src/styles/                    全局样式、深色模式配色、Markdown 样式
+src/utils/                     文章读取、路径、时间、封面等工具
+src/data/cover-assignments.json 自动封面分配结果
+public/covers/gallery/         自动封面图库
+scripts/                       本地和发布前辅助脚本
+.github/workflows/             GitHub Actions 构建与部署配置
+```
+
+写文章时，主要只会碰到 `src/data/blog/` 和 `public/covers/gallery/`。改站点结构时，才需要进入 `src/pages/`、`src/components/`、`src/layouts/` 和 `src/styles/`。
+
+## 用到的工具
+
+当前博客主要依赖这些工具：
+
+| 工具            | 作用                           | 成本说明                                    |
+| --------------- | ------------------------------ | ------------------------------------------- |
+| Astro           | 静态站点生成，把文章构建为页面 | 本地开源工具，不按使用量计费                |
+| @astrojs/mdx    | 支持 `.mdx` 文章               | 项目依赖，不按使用量计费                    |
+| @astrojs/svelte | 支持少量交互组件               | 项目依赖，不按使用量计费                    |
+| Tailwind CSS    | 样式工具                       | 项目依赖，不按使用量计费                    |
+| Pagefind        | 生成本地搜索索引               | 构建期工具，不需要付费搜索服务              |
+| GitHub Actions  | 推送后自动构建                 | 公共仓库标准 GitHub-hosted runner 免费      |
+| GitHub Pages    | 托管静态站点                   | 公共仓库可用于免费 Pages 站点，但有使用限制 |
+
+这里的“0 成本”建立在几个前提上：
+
+- 仓库是 GitHub 公共仓库。
+- 使用的是 GitHub 提供的标准 runner，例如当前 workflow 中的 `ubuntu-latest`。
+- 部署目标是 GitHub Pages。
+- 没有接入付费评论、数据库、对象存储、CDN、统计分析或后端服务。
+- 没有购买自定义域名，或域名费用不计入这个博客架构。
+
+GitHub Pages 不是无限资源。官方文档列出的典型限制包括：发布后的站点不超过 1GB、源仓库建议不超过 1GB、单次部署超过 10 分钟会超时、站点每月有 100GB 软带宽限制。普通个人博客只要控制图片体积，通常不会触碰这些限制。
+
+参考链接：
+
+- [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)
+- [What is GitHub Pages?](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)
+- [GitHub Actions billing and usage](https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration)
+
+## 当前模板做了什么取舍
+
+当前界面以 Momo 模板为基础改造，但不是原样照搬。主要取舍是：
+
+- 保留 Momo 风格的文章展示和文章卡片。
+- 首页保留“推荐阅读”和“最近更新”两个区域，每个区域最多展示 3 篇文章。
+- 文章支持多标签归档。
+- `tags` 中包含 `精选` 时，文章会进入首页“推荐阅读”。
+- `/featured/` 显示所有精选文章，每页 6 篇，按发布时间倒序分页。
+- `/posts/` 显示所有文章，包括精选文章，每页 6 篇，按发布时间倒序分页。
+- 删除评论功能，不是关闭或隐藏。
+- 删除友链页面。
+- 深色模式沿用当前博客已有的配色方案。
+- 支持 Markdown 和 MDX 两种文章格式。
+- 支持自动封面图库。
+
+<MdxTip title="维护原则">
+  这个博客更适合做长期内容库，而不是功能复杂的社区站点。没有评论、没有登录、没有数据库，可以减少维护成本和潜在付费项。
+</MdxTip>
+
+## 日常写作流程
+
+新文章放在 `src/data/blog/` 下，可以按主题建立子目录。例如：
+
+```text
+src/data/blog/Blog/blog-operation-guide.mdx
+src/data/blog/Cyberspace-security/ch1-Overview.md
+```
+
+文件名建议使用英文、拼音或短横线命名。文章标题写在 frontmatter 的 `title` 里，不需要把中文标题塞进文件名。
+
+最小推荐 frontmatter：
+
+```yaml
+---
+title: 新文章标题
+description: 新文章摘要，会显示在首页和列表中
+pubDatetime: 2026-04-26T17:23:59+08:00
+modDatetime:
+tags:
+  - 博客
+  - 使用说明
+draft: false
+---
+```
+
+字段说明：
+
+- `title`：文章标题。
+- `description`：文章摘要，用于首页、列表和 SEO 描述。
+- `pubDatetime`：发布时间，可以先留空为 `pubDatetime:`。
+- `modDatetime`：修改时间，可以留空。
+- `tags`：标签数组，支持多个标签。
+- `draft`：草稿状态；正式发布时写 `false`。
+- `image`：可选封面图；不写时由图库自动分配。
+- `featured`：可选，写 `true` 时进入首页推荐。
+- `pinTop`：可选排序权重，只影响首页推荐阅读的人工排序，数字越大越靠前。
+
+`pubDatetime` 可以留空，因为项目里有自动补时间的脚本：
+
+```text
+scripts/fill-post-dates.mjs
+```
+
+这个脚本会在下面这些命令之前自动执行：
+
+```bash
+npm run dev
+npm run check
+npm run build
+```
+
+本地 `.git/hooks/pre-commit` 中也有 hook：新增文章时补空的 `pubDatetime`，修改文章时更新 `modDatetime`。不过 `.git/hooks/` 不会提交到 GitHub，所以真正可复现的机制还是仓库里的 npm 脚本。
+
+## 日常发布流程
+
+推荐流程是：
+
+```bash
+npm run dev
+npm run publish
+git status
+git add .
+git commit -m "docs: add blog operation guide"
+git push origin main
+```
+
+每一步的作用：
+
+1. `npm run dev` 启动本地开发服务器，检查文章是否能正常打开。
+2. `npm run publish` 执行发布前检查，内部会跑 `npm run check` 和 `npm run build`。
+3. `git status` 看清楚本次会提交哪些文件。
+4. `git add .` 暂存修改。
+5. `git commit` 写提交信息。
+6. `git push origin main` 推送到 GitHub。
+
+推送到 `main` 后，`.github/workflows/deploy.yml` 会自动执行：
+
+```text
+checkout 仓库
+setup-node 使用 Node 22.12.0
+npm ci 安装依赖
+npm run build 构建站点
+upload-pages-artifact 上传 dist/
+deploy-pages 部署到 GitHub Pages
+```
+
+需要特别注意命令名称：
+
+```bash
+npm run publish
+```
+
+不是：
+
+```bash
+npm publish
+```
+
+`npm run publish` 是运行 `package.json` 中名为 `publish` 的脚本；`npm publish` 是把当前包发布到 npm registry 的命令。这个博客不需要执行 `npm publish`。
+
+## 本地检查是否必须 build
+
+如果只是写草稿，可以先用：
+
+```bash
+npm run dev
+```
+
+如果准备提交并推送，建议执行：
+
+```bash
+npm run publish
+```
+
+原因是 `npm run publish` 会跑完整的内容校验和生产构建，能提前发现：
+
+- frontmatter 字段不符合 schema。
+- MDX 语法错误。
+- 组件导入路径错误。
+- 图片路径或静态资源路径错误。
+- 生产环境基础路径 `/MyBlog` 下的构建问题。
+
+即使忘记本地 build，推送后 GitHub Actions 也会重新构建。但本地先跑 `npm run publish` 可以避免把明显失败的提交推到远端。
+
+## 多标签归档
+
+文章的 `tags` 是数组，所以一篇文章可以同时属于多个分类：
+
+```yaml
+tags:
+  - 网络空间安全
+  - 课程笔记
+  - SWJTU
+```
+
+归档页会读取所有文章标签。文章卡片和文章详情页也会显示这些标签。
+
+如果希望文章进入首页“推荐阅读”，推荐直接加入 `精选` 标签：
+
+```yaml
+tags:
+  - 博客
+  - 使用说明
+  - 精选
+```
+
+也可以使用旧字段：
+
+```yaml
+featured: true
+```
+
+当前逻辑会同时识别 `featured: true` 和 `精选` 标签。未精选的文章会显示在首页“最近更新”。
+
+## 首页、精选页和全部文章页
+
+首页现在只作为主要入口，不再做分页：
+
+- “推荐阅读”最多显示 3 篇精选文章。
+- “最近更新”最多显示 3 篇非精选文章。
+- “最近更新”不包含精选文章，避免同一篇文章在首页重复出现。
+- “推荐阅读”下方有“查看全部精选”链接，跳转到 `/featured/`。
+- 首页底部有“查看全部文章”链接，跳转到 `/posts/`。
+
+首页推荐阅读保留人工推荐能力。精选文章先按 `pinTop` 倒序排列，`pinTop` 相同时再按发布时间倒序排列：
+
+```yaml
+tags:
+  - 博客
+  - 精选
+pinTop: 10
+```
+
+`pinTop` 不影响文章的物理存储目录，也不改变文章 URL。它只是一个展示排序字段。
+
+`/featured/` 是精选文章页，显示所有精选文章，每页 6 篇，按发布时间倒序排列。分页 URL 使用：
+
+```text
+/featured/
+/featured/page/2/
+```
+
+`/posts/` 是全部文章页，显示所有文章，包括精选文章，每页 6 篇，按发布时间倒序排列。分页 URL 使用：
+
+```text
+/posts/
+/posts/page/2/
+```
+
+`/archives/` 继续作为归档和标签筛选页。也就是说：
+
+- 首页负责快速入口。
+- `/featured/` 负责精选文章全集。
+- `/posts/` 负责纯时间线的全部文章。
+- `/archives/` 负责标签筛选和多标签归档。
+
+## 自动封面图库
+
+自动封面图库目录是：
+
+```text
+public/covers/gallery/
+```
+
+日常写文章时，可以不写 `image`。运行 `npm run dev`、`npm run check` 或 `npm run build` 前，脚本会执行：
+
+```text
+scripts/sync-post-covers.mjs
+```
+
+这个脚本会扫描文章和图库，把自动分配结果写入：
+
+```text
+src/data/cover-assignments.json
+```
+
+例如：
+
+```json
+{
+  "mode": "sequence",
+  "assignments": {
+    "blog/example-post": "/covers/gallery/1.webp"
+  }
+}
+```
+
+`mode` 支持两种值：
+
+- `sequence`：按图库文件名字典序循环分配。
+- `random`：新文章第一次分配时随机选择。
+
+无论是顺序还是随机，分配结果都会写入 `cover-assignments.json`。旧文章已有分配时，不会因为重新构建而换封面。
+
+如果某篇文章需要固定封面，可以在 frontmatter 写：
+
+```yaml
+image: /covers/gallery/special.webp
+```
+
+手动 `image` 的优先级最高，自动图库不会覆盖它。
+
+### 图片大小建议
+
+图片没有严格的尺寸限制，不满足推荐尺寸时也不会导致构建失败。实际结果取决于图片本身：
+
+- 尺寸比例不合适时，封面区域可能发生裁切。
+- 文件太大时，页面加载会变慢。
+- 图片太小或压缩过度时，高分辨率屏幕上会显得模糊。
+- 图片格式不被浏览器良好支持时，访问者可能看不到封面。
+
+推荐规则：
+
+- 优先使用 `.webp`。
+- 横向图更适合作为封面。
+- 推荐接近 `1200x630` 或 `16:9`。
+- 单张图片尽量控制在几百 KB 内。
+- 如果希望顺序更直观，后续新增图片可以使用 `001.webp`、`002.webp` 这样的零填充命名。
+
+## MDX 是什么
+
+Markdown 适合普通文章。MDX 可以理解为“Markdown + 组件”。它让你在文章中写普通 Markdown，同时导入并使用 Astro 或 Svelte 组件。
+
+适合使用 MDX 的场景：
+
+- 文章里需要统一的提示块、警告块、定义块。
+- 需要插入可复用的展示组件。
+- 需要把一段复杂展示封装成组件，而不是在文章里堆 HTML。
+- 需要少量交互或结构化内容。
+
+不建议使用 MDX 的场景：
+
+- 普通课程笔记。
+- 只有标题、段落、图片、列表和代码块的文章。
+- 一次性写大量 JSX，导致文章可读性变差。
+
+<MdxTip title="推荐原则">
+  先用 Markdown。只有在 Markdown 表达不够清晰，或者确实需要组件时，再使用 MDX。
+</MdxTip>
+
+## MDX 上手教程
+
+### 1. 创建 MDX 文件
+
+在 `src/data/blog/Blog/` 下创建一个 `.mdx` 文件：
+
+```text
+src/data/blog/Blog/my-first-mdx-post.mdx
+```
+
+写入 frontmatter：
+
+```mdx
+---
+title: 我的第一篇 MDX 文章
+description: 学习如何在当前博客中使用 MDX
+pubDatetime: 2026-04-26T17:23:59+08:00
+modDatetime:
+tags:
+  - 博客
+  - MDX
+draft: false
+---
+```
+
+frontmatter 后面就是正文。
+
+### 2. 继续使用 Markdown 语法
+
+MDX 仍然支持 Markdown：
+
+````mdx
+## 二级标题
+
+这是一段正文。
+
+- 列表项一
+- 列表项二
+
+> 这是一段引用。
+
+```ts
+const message = "hello mdx";
+console.log(message);
+```
+````
+
+这里要注意：如果你在 MDX 文章中展示三反引号代码块，外层文档本身也在使用代码块时，需要避免嵌套冲突。实际写文章时只写内层代码块即可。
+
+### 3. 导入组件
+
+当前项目已经有一个 MDX 提示组件：
+
+```text
+src/components/mdx/MdxTip.astro
+```
+
+在 MDX 文章中导入它：
+
+```mdx
+import MdxTip from "@/components/mdx/MdxTip.astro";
+```
+
+然后在正文使用：
+
+```mdx
+<MdxTip title="写作建议">
+  这是一段提示内容。它会使用当前博客的主题变量，浅色和深色模式都会跟随站点配色。
+</MdxTip>
+```
+
+组件使用时需要注意：
+
+- 组件名必须以大写字母开头，例如 `MdxTip`。
+- 标签需要正确闭合。
+- 组件属性使用引号，例如 `title="写作建议"`。
+- 导入路径可以使用 `@/`，对应项目的 `src/` 目录。
+
+### 4. 自己写一个 MDX 组件
+
+如果需要一个专门展示定义的组件，可以新建：
+
+```text
+src/components/mdx/MdxDefinition.astro
+```
+
+示例代码：
+
+```astro
+---
+interface Props {
+  term: string;
+}
+
+const { term } = Astro.props;
+---
+
+<section class="my-6 border-l-4 border-[var(--link-color)] pl-4">
+  <p class="font-bold text-[var(--text-color)]">{term}</p>
+  <div class="mt-2 text-[var(--text-color-70)]">
+    <slot />
+  </div>
+</section>
+```
+
+然后在文章里使用：
+
+```mdx
+import MdxDefinition from "@/components/mdx/MdxDefinition.astro";
+
+<MdxDefinition term="静态站点">
+  静态站点是提前构建好的 HTML、CSS 和 JavaScript
+  文件集合，访问时不需要服务器动态生成页面。
+</MdxDefinition>
+```
+
+组件样式建议使用当前站点已有的 CSS 变量，例如：
+
+```text
+var(--text-color)
+var(--text-color-70)
+var(--link-color)
+var(--button-hover-color)
+```
+
+这样组件在浅色和深色模式下都能保持一致。
+
+### 5. 在 MDX 中插入图片
+
+如果是普通图片，可以继续使用 Markdown：
+
+```mdx
+![图片说明](/covers/gallery/1.webp)
+```
+
+如果是文章封面，推荐写在 frontmatter：
+
+```yaml
+image: /covers/gallery/1.webp
+```
+
+如果不写 `image`，自动封面图库会给文章分配一张。
+
+### 6. 在 MDX 中写表格
+
+普通 Markdown 表格可以直接使用：
+
+```mdx
+| 命令            | 作用       |
+| --------------- | ---------- |
+| npm run dev     | 本地开发   |
+| npm run publish | 发布前检查 |
+```
+
+如果表格太复杂，优先考虑拆成列表或自定义组件。文章不是越复杂越好，长期可维护性更重要。
+
+### 7. 常见 MDX 错误
+
+常见错误包括：
+
+- `import` 写在正文中间。推荐把导入放在 frontmatter 后、正文前。
+- 组件标签没有闭合。
+- JSX 属性没有加引号。
+- 在组件里写了不合法的 HTML 结构。
+- 把普通 HTML 的 `class` 写法和组件语法混在一起时不够一致。
+- 代码块反引号嵌套错误。
+
+遇到问题时先运行：
+
+```bash
+npm run check
+```
+
+如果 `check` 通过但生产页面异常，再运行：
+
+```bash
+npm run build
+npm run preview
+```
+
+## 一篇完整 MDX 文章示例
+
+下面是一篇可以直接参考的 MDX 文章结构：
+
+````mdx
+---
+title: 示例：使用 MDX 写一篇组件化文章
+description: 展示 frontmatter、Markdown 内容、组件导入和组件使用方式
+pubDatetime: 2026-04-26T17:23:59+08:00
+modDatetime:
+tags:
+  - 博客
+  - MDX
+  - 精选
+draft: false
+---
+
+import MdxTip from "@/components/mdx/MdxTip.astro";
+
+## 为什么使用 MDX
+
+普通 Markdown 适合大多数文章。MDX 适合需要组件化表达的文章。
+
+<MdxTip title="建议">
+  如果只是普通笔记，继续使用 .md；如果需要插入组件，再使用 .mdx。
+</MdxTip>
+
+## 示例代码
+
+```ts
+export function hello(name: string) {
+  return `hello ${name}`;
+}
+```
+````
+
+实际写文章时，不需要为了使用 MDX 而使用 MDX。它应该解决表达问题，而不是增加维护负担。
+
+## 发布前检查清单
+
+发布前建议逐项检查：
+
+- 文章是否放在 `src/data/blog/` 下。
+- 文件扩展名是否是 `.md` 或 `.mdx`。
+- `title`、`description`、`tags`、`draft` 是否完整。
+- `pubDatetime` 是否可以自动补全，或已经手动填写。
+- 需要精选时，是否添加了 `精选` 标签或 `featured: true`。
+- 需要固定封面时，是否写了 `image`。
+- 图片是否放在 `public/` 下，并使用 `/` 开头的路径引用。
+- 本地是否运行过 `npm run publish`。
+- `git status` 是否只包含本次想提交的内容。
+
+## 费用与限制注意事项
+
+当前方案没有隐藏的博客运行费用，但要注意边界：
+
+- 公共仓库中的标准 GitHub Actions runner 免费；私有仓库会按 GitHub 账号套餐和用量计算。
+- GitHub Pages 托管静态站点免费可用，但不是无限制托管服务。
+- Pages 更适合个人、项目、文档和博客，不适合商业 SaaS、支付、敏感数据提交或大型文件分发。
+- 图片过大不会直接收费，但会增加仓库和 Pages 站点体积，也会降低访问速度。
+- 如果未来接入自定义域名，域名注册商可能收费。
+- 如果未来接入评论系统、数据库、云存储、访问统计、CDN 或后端服务，需要单独评估费用和隐私风险。
+
+## 维护建议
+
+长期维护这个博客时，建议保持以下习惯：
+
+- 普通文章优先用 `.md`。
+- 需要组件表达时再用 `.mdx`。
+- 新文章先不写 `image`，让图库自动分配封面。
+- 希望首页推荐时，在 `tags` 里加 `精选`。
+- 发布前跑 `npm run publish`。
+- 大图先转成 WebP 再放进图库。
+- 不提交 `dist/`、`.astro/`、`public/pagefind/` 等生成物。
+- 不把 `newblogtemp/` 这种参考模板提交进仓库。
+- 不重新加入评论系统和友链页面，除非明确决定改变当前博客定位。
+
+这套流程的目标是让写作和发布足够简单：写文章、检查、提交、推送，剩下交给 GitHub Actions 和 GitHub Pages。

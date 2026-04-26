@@ -1,0 +1,72 @@
+---
+import MainPageLayout from "@layouts/MainPageLayout.astro";
+import PostCard from "@components/PostCard.astro";
+import Navi from "@components/control/Navi.astro";
+import FabMenu from "@components/control/FabMenu.astro";
+import { blogCoverUrl } from "@utils/url-utils";
+import type { BlogEntryWithLocaleStatus } from "@utils/content-utils";
+
+interface Props {
+  title: string;
+  heading: string;
+  description: string;
+  entries: BlogEntryWithLocaleStatus[];
+  currentLang: string;
+  currentPage: number;
+  totalPages: number;
+  basePath: string;
+  emptyText?: string;
+}
+
+const {
+  title,
+  heading,
+  description,
+  entries,
+  currentLang,
+  currentPage,
+  totalPages,
+  basePath,
+  emptyText = "暂无文章",
+} = Astro.props;
+---
+
+<MainPageLayout title={title} lang={currentLang} description={description}>
+  <section class="mx-auto mt-18 w-full max-w-[var(--page-width)] py-8 md:mt-0">
+    <header data-aos="fade-up" class="mb-8 pt-10">
+      <h1 class="mb-3 text-3xl font-bold text-[var(--text-color)]">
+        {heading}
+      </h1>
+      <p class="max-w-3xl leading-relaxed text-[var(--text-color-70)]">
+        {description}
+      </p>
+    </header>
+
+    {
+      entries.length > 0 ? (
+        entries.map(entry => (
+          <PostCard
+            entry={entry}
+            title={entry.data.title}
+            description={entry.data.description}
+            image={blogCoverUrl(entry.data.image, entry.id)}
+            pubDate={entry.data.pubDate}
+            url={entry.routePath ?? entry.id}
+            fallback={entry.isFallback ?? false}
+          />
+        ))
+      ) : (
+        <p data-aos="fade-up" class="py-12 text-[var(--text-color-70)]">
+          {emptyText}
+        </p>
+      )
+    }
+
+    <Navi
+      currentPage={currentPage}
+      totalPages={totalPages}
+      basePath={basePath}
+    />
+  </section>
+  <FabMenu showBackBottom={true} />
+</MainPageLayout>

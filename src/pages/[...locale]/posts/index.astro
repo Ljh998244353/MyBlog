@@ -1,0 +1,48 @@
+---
+import PostListPage from "@components/PostListPage.astro";
+import { SITE, siteConfig } from "@/config";
+import { getBlogEntrySort } from "@utils/content-utils";
+import { i18n } from "astro:config/client";
+
+export async function getStaticPaths() {
+  const paths = [];
+  const locales = i18n?.locales ?? ["zh-cn"];
+  const defaultLocale = i18n?.defaultLocale ?? "zh-cn";
+  const pageSize = SITE.postPerPage;
+
+  for (const locale of locales) {
+    const localeCode = typeof locale === "string" ? locale : locale.path;
+    const localeParam = localeCode === defaultLocale ? undefined : localeCode;
+    const entries = await getBlogEntrySort(localeCode);
+
+    paths.push({
+      params: { locale: localeParam },
+      props: {
+        entries: entries.slice(0, pageSize),
+        currentPage: 1,
+        totalPages: Math.max(1, Math.ceil(entries.length / pageSize)),
+      },
+    });
+  }
+
+  return paths;
+}
+
+const currentLang = Astro.currentLocale || i18n!.defaultLocale;
+const { entries, currentPage, totalPages } = Astro.props;
+const pageTitle = `全部文章 - ${siteConfig.title}`;
+const pageDescription =
+  "按发布时间倒序排列的全部文章列表，包含精选文章和普通文章。";
+---
+
+<PostListPage
+  title={pageTitle}
+  heading="全部文章"
+  description={pageDescription}
+  entries={entries}
+  currentLang={currentLang}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  basePath="/posts/"
+  emptyText="暂无文章"
+/>

@@ -6,6 +6,7 @@ dist/
 
 # dependencies
 node_modules/
+.pnpm-store/
 
 # logs
 npm-debug.log*
@@ -15,7 +16,8 @@ pnpm-debug.log*
 
 # environment variables
 .env
-.env.production
+.env.*
+!.env.example
 
 # macOS-specific files
 .DS_Store
@@ -24,5 +26,12 @@ pnpm-debug.log*
 .idea/
 
 # pagefind
+public/pagefind/
 
-public/pagefind
+# local reference templates
+newblogtemp/
+
+# local deployment/tooling cache
+.vercel/
+.netlify/
+coverage/

@@ -14,15 +14,16 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
   <button
     data-button="back-to-top"
     class:list={[
-      "group relative bg-background px-2 py-1",
-      "size-14 rounded-full shadow-xl",
-      "md:h-8 md:w-fit md:rounded-md md:shadow-none md:focus-visible:rounded-none",
+      "group relative bg-background/80 px-2 py-1 text-foreground backdrop-blur-md",
+      "size-14 rounded-full",
+      "md:h-8 md:w-fit md:rounded-none md:focus-visible:rounded-none",
       "md:bg-background/35 md:bg-clip-padding md:backdrop-blur-lg",
+      "transition-colors duration-200 hover:text-accent",
     ]}
   >
     <span
       id="progress-indicator"
-      class="absolute inset-0 -z-10 block size-14 scale-110 rounded-full bg-transparent md:hidden md:h-8 md:rounded-md"
+      class="absolute inset-0 -z-10 block size-14 scale-110 rounded-full bg-transparent md:hidden md:h-8 md:rounded-none"
     ></span>
     <IconChevronLeft class="inline-block rotate-90 md:hidden" />
     <span class="sr-only text-sm group-hover:text-accent md:not-sr-only">
@@ -46,8 +47,12 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
 
     // Attach click event handler for back-to-top button
     backToTopBtn.addEventListener("click", () => {
-      document.body.scrollTop = 0; // For Safari
-      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches
+        ? "auto"
+        : "smooth";
+
+      window.scrollTo({ top: 0, behavior });
     });
 
     // Handle button visibility according to scroll position
@@ -55,14 +60,15 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
     function handleScroll() {
       const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;
       const scrollTop = rootElement.scrollTop;
-      const scrollPercent = Math.floor((scrollTop / scrollTotal) * 100);
+      const scrollPercent =
+        scrollTotal > 0 ? Math.floor((scrollTop / scrollTotal) * 100) : 0;
 
       progressIndicator.style.setProperty(
         "background-image",
         `conic-gradient(var(--accent), var(--accent) ${scrollPercent}%, transparent ${scrollPercent}%)`
       );
 
-      const isVisible = scrollTop / scrollTotal > 0.3;
+      const isVisible = scrollTotal > 0 && scrollTop / scrollTotal > 0.3;
 
       if (isVisible !== lastVisible) {
         btnContainer.classList.toggle("opacity-100", isVisible);
@@ -83,6 +89,8 @@ import IconArrowNarrowUp from "@/assets/icons/IconArrowNarrowUp.svg";
         ticking = true;
       }
     });
+
+    handleScroll();
   }
   backToTop();
 </script>

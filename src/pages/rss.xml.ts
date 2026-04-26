@@ -1,21 +1,20 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
-import { getPath } from "@/utils/getPath";
-import getSortedPosts from "@/utils/getSortedPosts";
-import { SITE } from "@/config";
+import { getBlogEntrySort } from "../utils/content-utils"
+import { siteConfig, profileConfig } from '../config';
+import type { APIContext } from "astro";
+import { getPostUrl } from "@utils/url-utils";
 
-export async function GET() {
-  const posts = await getCollection("blog");
-  const sortedPosts = getSortedPosts(posts);
-  return rss({
-    title: SITE.title,
-    description: SITE.desc,
-    site: SITE.website,
-    items: sortedPosts.map(({ data, id, filePath }) => ({
-      link: getPath(id, filePath),
-      title: data.title,
-      description: data.description,
-      pubDate: new Date(data.modDatetime ?? data.pubDatetime),
-    })),
-  });
+export async function GET(context: APIContext) {
+    const blog = await getBlogEntrySort("zh-cn");
+    return rss({
+        title: `${siteConfig.title} - ${siteConfig.subTitle}`,
+        description: profileConfig.description,
+        site: context.site ?? "https://ljh998244353.github.io",
+        items: blog.slice(0, 20).map((post) => ({
+            title: post.data.title,
+            pubDate: post.data.pubDate,
+            description: post.data.description,
+            link: getPostUrl("zh-cn", post.routePath),
+        })),
+    })
 }

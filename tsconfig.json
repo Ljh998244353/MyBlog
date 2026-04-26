@@ -1,10 +1,18 @@
 {
   "extends": "astro/tsconfigs/strict",
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist", "public/pagefind"],
+  "exclude": ["dist", "public/pagefind", "newblogtemp"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@components/*": ["./src/components/*"],
+      "@assets/*": ["./src/assets/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@i18n/*": ["./src/i18n/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@plugins/*": ["./src/plugins/*"],
+      "@styles/*": ["./src/styles/*"],
       "@/*": ["./src/*"]
     },
     "jsx": "react-jsx",
