@@ -4,6 +4,7 @@ import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import icon from "astro-icon";
+import rehypeMermaid from "rehype-mermaid";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import {
@@ -47,10 +48,24 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    syntaxHighlight: {
+      type: "shiki",
+      excludeLangs: ["mermaid", "math"],
+    },
     remarkPlugins: [
       remarkReadingTime,
       remarkToc,
       [remarkCollapse, { test: "Table of contents" }],
+    ],
+    rehypePlugins: [
+      [
+        rehypeMermaid,
+        {
+          strategy: "img-svg",
+          colorScheme: "light",
+          dark: true,
+        },
+      ],
     ],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes

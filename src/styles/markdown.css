@@ -253,6 +253,16 @@
   border-radius: 6px;
 }
 
+.markdown-content picture {
+  display: block;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.markdown-content picture img {
+  margin: 0 auto;
+}
+
 .markdown-content hr {
   margin: 2rem 0;
   border: none;

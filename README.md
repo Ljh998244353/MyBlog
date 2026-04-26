@@ -6,9 +6,9 @@
 
 这个仓库的日常使用目标是 0 成本：
 
-- Astro 在本地或 GitHub Actions 中把文章构建成静态 HTML、CSS 和 JavaScript。
+- Astro 在本地把文章构建成静态 HTML、CSS 和 JavaScript。
 - GitHub Pages 托管构建后的 `dist/` 静态文件，不需要服务器、数据库或后端接口。
-- GitHub Actions 在公共仓库中使用标准 GitHub-hosted runner 构建和部署；GitHub 官方文档说明公共仓库标准 runner 免费使用。
+- 日常部署通过本地脚本把 `dist/` 推送到 `gh-pages` 分支，不使用 GitHub Actions 构建和部署。
 - Pagefind 在构建时生成本地搜索索引，搜索运行在浏览器端，不需要外部搜索服务。
 - MDX、Svelte、Tailwind CSS、Astro 集成和脚本都只是项目依赖，不会按访问量计费。
 
@@ -18,19 +18,17 @@
 
 - [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)
 - [What is GitHub Pages?](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages)
-- [GitHub Actions billing and usage](https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration)
 
 ## 项目结构
 
 ```text
 .
-├── .github/workflows/        GitHub Actions 构建与 Pages 部署
 ├── public/                   静态资源，会原样发布
 │   └── covers/gallery/       自动文章封面图库
 ├── scripts/                  本地辅助脚本
 │   ├── fill-post-dates.mjs   自动补全空的 pubDatetime
 │   ├── preview.mjs           本地生产预览
-│   ├── publish.mjs           发布前检查脚本
+│   ├── publish.mjs           本地构建并发布到 gh-pages 分支
 │   └── sync-post-covers.mjs  自动封面分配脚本
 ├── src/
 │   ├── components/           Astro/Svelte 组件
@@ -53,7 +51,6 @@
 - `@astrojs/svelte`：支持少量需要交互的 Svelte 组件，例如归档筛选。
 - `Tailwind CSS`：样式工具，当前项目也保留了全局 CSS 变量用于浅色/深色模式。
 - `Pagefind`：构建后生成搜索索引，部署时不需要后端。
-- `GitHub Actions`：推送到 `main` 后自动安装依赖、构建并上传 Pages artifact。
 - `GitHub Pages`：托管静态站点。
 
 ## 本地环境
@@ -86,7 +83,7 @@ npm run publish
 - `npm run check`：执行 Astro 类型检查与内容校验。运行前会执行 `prepare:content`。
 - `npm run build`：生产构建，生成 `dist/`，并用 Pagefind 生成搜索索引。
 - `npm run preview`：本地预览生产构建结果。
-- `npm run publish`：发布前检查脚本，会依次执行 `npm run check` 和 `npm run build`。
+- `npm run publish`：本地发布脚本，会依次执行 `npm run check`、`npm run build`，然后把 `dist/` 推送到 `gh-pages` 分支。每次发布都会用一个新的单提交替换 `gh-pages`，不保留旧部署历史，用来控制仓库体积。
 
 注意：这里的发布脚本是 `npm run publish`，不是 `npm publish`。`npm publish` 是把包发布到 npm registry 的命令，本博客日常发布不要执行它。
 
@@ -94,20 +91,25 @@ npm run publish
 
 1. 在 `src/data/blog/` 下新增或修改文章。
 2. 本地执行 `npm run dev`，在浏览器里检查内容、排版、封面和标签。
-3. 发布前执行 `npm run publish`。
-4. 检查通过后提交并推送到 `main`。
-5. GitHub Actions 自动构建并部署到 GitHub Pages。
+3. 提交前可执行 `npm run check` 或 `npm run build`，确认内容和生产构建没有问题。
+4. 检查 `git status`，提交源码并推送到 `main`。
+5. 在源码工作区干净时执行 `npm run publish`，本地构建并发布到 `gh-pages`。
 
 推荐命令顺序：
 
 ```bash
 npm run dev
-npm run publish
+npm run check
 git status
 git add .
 git commit -m "docs: update blog guide"
 git push origin main
+npm run publish
 ```
+
+GitHub Pages 仓库设置需要选择 `Deploy from a branch`，分支选择 `gh-pages`，目录选择 `/root`。
+
+`gh-pages` 是纯发布分支，不要手动提交源码到这个分支。发布脚本会用 `--force-with-lease` 安全替换它的历史，使该分支只保留最新一次部署提交。
 
 本地 `.git/hooks/pre-commit` 里也有一个本地 Git hook：新增 `.md` 或 `.mdx` 文件时，如果 `pubDatetime:` 为空，会在提交前补当前时间；修改文章时，会更新 `modDatetime`。这个 hook 是本机 `.git/` 目录下的本地配置，不会随仓库提交到 GitHub。仓库里真正可复现的是 `scripts/fill-post-dates.mjs`，它会在 `dev`、`check`、`build` 前运行。
 
@@ -120,7 +122,7 @@ git push origin main
 title: 文章标题
 description: 文章摘要，会显示在首页和列表中
 pubDatetime:
-modDatetime: 2026-04-26T17:23:59+08:00
+modDatetime: 2026-04-26T21:09:55+08:00
 tags:
   - 博客
   - 使用说明
@@ -234,7 +236,7 @@ image: /covers/gallery/special.webp
 - `newblogtemp/` 是本地参考模板目录，已加入 `.gitignore`，不参与构建和提交。
 - `dist/`、`.astro/`、`public/pagefind/` 是生成物，不需要手动提交。
 - 图片建议优先使用 `.webp`，单张尽量控制在几百 KB 以内。GitHub Pages 不会按图片请求计费，但大图会拖慢访问，也会占用 Pages 站点体积。
-- 公共仓库 + 标准 GitHub-hosted runner + GitHub Pages 是当前 0 成本方案；如果改成私有仓库、使用付费 runner、购买域名或接入第三方服务，可能出现额外费用。
+- 公共仓库 + 本地构建 + GitHub Pages 是当前 0 成本方案；如果购买域名或接入第三方服务，可能出现额外费用。
 - GitHub Pages 适合静态博客，不适合收集敏感数据、处理支付或作为商业 SaaS 后端。
 
 更完整的站内说明见文章《博客架构、发布流程与 MDX 上手手册》。

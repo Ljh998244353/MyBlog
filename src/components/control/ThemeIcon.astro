@@ -53,7 +53,7 @@ if (typeof window !== 'undefined') {
     };
 
     function showThemeToast(themeName) {
-      let toast = document.getElementById('theme-toast') || (() => {
+      const toast = document.getElementById('theme-toast') || (() => {
         const t = document.createElement('div');
         t.id = 'theme-toast';
         document.body.appendChild(t);
@@ -68,6 +68,19 @@ if (typeof window !== 'undefined') {
       toast.classList.add('show');
 
       toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function syncMermaidTheme(themeSet) {
+      const media =
+        themeSet === 'dark'
+          ? 'all'
+          : themeSet === 'light'
+            ? 'not all'
+            : '(prefers-color-scheme: dark)';
+
+      document
+        .querySelectorAll('picture source[id^="mermaid-dark-"]')
+        .forEach(source => source.setAttribute('media', media));
     }
 
     const setTheme = (themeSet, isFirstLoad = false) => { 
@@ -86,6 +99,7 @@ if (typeof window !== 'undefined') {
         }
       }
       window.localStorage.setItem('theme', themeSet);
+      syncMermaidTheme(themeSet);
 
       // --- 新增：如果不是页面初次加载，则显示弹窗 ---
       if (!isFirstLoad) {
