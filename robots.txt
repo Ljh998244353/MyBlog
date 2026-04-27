@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://ljh998244353.github.io/MyBlog/sitemap-index.xml
