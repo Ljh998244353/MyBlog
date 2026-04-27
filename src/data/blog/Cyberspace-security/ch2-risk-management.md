@@ -3,6 +3,7 @@ title:  CH2-网络空间安全风险管理及国产化
 description: SWJTU-网络空间安全技术-CH2
 pubDatetime: 2026-04-26T22:59:14+08:00
 modDatetime:
+image: /covers/gallery/deepseek.webp
 tags:
   - SWJTU
   - 网络空间安全
