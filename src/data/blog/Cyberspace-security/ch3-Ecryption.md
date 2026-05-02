@@ -2,11 +2,11 @@
 title: CH3-古典密码学
 description: SWJTU-网络空间安全技术-CH3
 pubDatetime: 2026-04-27T22:36:42+08:00
-modDatetime:
+modDatetime: 2026-05-02T13:23:55+08:00
 image: /covers/gallery/gpt.webp
 tags:
   - SWJTU
-  - 网络空间安全技术
+  - 网络空间安全
 draft: false
 ---
 
