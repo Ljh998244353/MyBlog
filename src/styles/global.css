@@ -12,7 +12,16 @@
 
   body {
     @apply bg-[--bg-color] text-[--text-color];
-    font-family: "Noto Serif SC", "Times New Roman", "STZhongsong", serif;
+    font-family:
+      "Noto Sans SC",
+      "Source Han Sans SC",
+      "PingFang SC",
+      "Microsoft YaHei UI",
+      "Microsoft YaHei",
+      "Hiragino Sans GB",
+      "WenQuanYi Micro Hei",
+      system-ui,
+      sans-serif;
     overflow-y: scroll;
   }
   
